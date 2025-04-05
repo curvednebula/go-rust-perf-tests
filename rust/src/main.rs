@@ -60,14 +60,14 @@ async fn main() {
         num_results += 1;
     }
 
-    assert!(num_results != TASKS_NUM);
+    assert!(num_results == TASKS_NUM);
 
     let duration = start.elapsed();
     let avg_task_completed_in = all_tasks_time / (num_results as u128);
 
     println!(
         "{} tasks, {} iterrations in each: finished in {:?}, one task avg {:?}, min {:?}, max {:?}",
-        TASKS_NUM,
+        num_results,
         VALUES_NUM,
         duration,
         Duration::from_millis(avg_task_completed_in as u64),
