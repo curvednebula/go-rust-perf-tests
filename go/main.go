@@ -14,10 +14,7 @@ type SomeData struct {
 	Age  uint32
 }
 
-func testNoPool() (total float64, min float64, max float64, avg float64) {
-	start := time.Now()
-	ch := make(chan float64)
-
+func testNoPool(start time.Time, ch chan float64) {
 	for range TASKS_NUM {
 		go func() {
 			dataMap := make(map[string]SomeData)
@@ -36,9 +33,50 @@ func testNoPool() (total float64, min float64, max float64, avg float64) {
 					sum += uint64(val.Age)
 				}
 			}
+			// for k := range dataMap {
+			// 	delete(dataMap, k)
+			// }
 			ch <- time.Since(start).Seconds()
 		}()
 	}
+}
+
+func testWithPool(start time.Time, ch chan float64) {
+	pool := new(Pool[SomeData])
+
+	for range TASKS_NUM {
+		go func() {
+			dataMap := make(map[string]*SomeData)
+			var sum uint64 = 0
+
+			for j := uint32(0); j < VALUES_NUM; j++ {
+				name := fmt.Sprintf("name-%d", j)
+
+				var data = pool.Get()
+				data.Name = name
+				data.Age = j
+				dataMap[name] = data
+
+				val, exists := dataMap[name]
+				if exists && val.Name == name {
+					sum += uint64(val.Age)
+				}
+			}
+
+			for k := range dataMap {
+				pool.Release(dataMap[k])
+			}
+			ch <- time.Since(start).Seconds()
+		}()
+	}
+}
+
+func main() {
+	start := time.Now()
+	ch := make(chan float64)
+
+	testNoPool(start, ch)
+	//testWithPool(start, ch)
 
 	taskSum := float64(0)
 	taskMin := math.MaxFloat64
@@ -55,47 +93,8 @@ func testNoPool() (total float64, min float64, max float64, avg float64) {
 			taskMax = taskTime
 		}
 	}
-	duration := time.Since(start)
+	total := time.Since(start).Seconds()
+	taskAvg := taskSum / TASKS_NUM
 
-	return duration.Seconds(), taskMin, taskMax, taskSum / TASKS_NUM
-}
-
-// func testWithPool() {
-// 	var wg sync.WaitGroup
-//  pool := Pool{}
-
-// 	for i := range TASKS_NUM {
-// 		wg.Add(1)
-
-// 		go func(i int) {
-// 			defer wg.Done()
-// 			dataMap := make(map[string]*SomeData)
-
-// 			for j := uint32(0); j < VALUES_NUM; j++ {
-// 				name := fmt.Sprintf("name-%d", j)
-
-// 				var data = pool.Get()
-// 				data.Name = name
-// 				data.Age = j
-// 				dataMap[name] = data
-
-// 				_, exists := dataMap[name]
-// 				if exists {
-// 					//
-// 				}
-// 			}
-
-// 			for k := range dataMap {
-// 				pool.Release(dataMap[k])
-// 			}
-// 		}(i)
-// 	}
-
-// 	wg.Wait()
-// }
-
-func main() {
-	total, min, max, avg := testNoPool()
-	//testWithPool()
-	fmt.Printf("%d tasks, %d iterrations in each: finished in %.2fs, one task avg %.2fs, min %.2fs, max %.2fs\n", TASKS_NUM, VALUES_NUM, total, avg, min, max)
+	fmt.Printf("%d tasks, %d items: finished in %.2fs, one task avg %.2fs, min %.2fs, max %.2fs\n", TASKS_NUM, VALUES_NUM, total, taskAvg, taskMin, taskMax)
 }

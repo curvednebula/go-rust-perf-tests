@@ -2,7 +2,7 @@ package main
 
 import "sync"
 
-type Pool[T struct{}] struct {
+type Pool[T any] struct {
 	items []*T
 	mutex sync.Mutex
 }
@@ -14,7 +14,7 @@ func (p *Pool[T]) Get() *T {
 	var data *T
 
 	if poolLen == 0 {
-		data = &T{}
+		data = new(T)
 		p.items = append(p.items, data)
 	} else {
 		data = p.items[poolLen-1]
