@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bar Chart Example</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+  <canvas id="timeChart" width="400" height="200"></canvas>
+  <canvas id="ramChart" width="400" height="200"></canvas>
+  </div>
+
+  <script>
+    const opt = {
+      indexAxis: 'y',
+      elements: {
+        bar: {
+          borderWidth: 2,
+        }
+      },
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'right',
+        },
+        title: {
+          display: true,
+          text: 'Execution Time (sec)'
+        }
+      }
+    };
+
+    const data1 = {
+      labels: ['Avg'],
+      datasets: [
+        {
+          label: 'Go',
+          data: [46.32],
+          backgroundColor: '#27548A',
+          borderWidth: 0
+        },
+        {
+          label: 'Rust',
+          data: [67.85],
+          backgroundColor: '#DDA853',
+          borderWidth: 0
+        }
+      ]
+    };
+
+    const ctx = document.getElementById('timeChart').getContext('2d');
+    const myChart = new Chart(ctx, { type: 'bar', data: data1, options: opt });
+
+    const data2 = {
+      labels: ['Min', 'Max'],
+      datasets: [
+        {
+          label: 'Go',
+          data: [1500, 4000],
+          backgroundColor: '#27548A',
+          borderWidth: 0
+        },
+        {
+          label: 'Rust',
+          data: [35, 60],
+          backgroundColor: '#DDA853',
+          borderWidth: 0
+        }
+      ]
+    };
+
+    const opt2 = { ...opt };
+    opt2.plugins.title.text = 'RAM Usage (Mb)';
+    const ctx2 = document.getElementById('ramChart').getContext('2d');
+    const myChart2 = new Chart(ctx2, { type: 'bar', data: data2, options: opt2 });
+  </script>
+</body>
+</html>
