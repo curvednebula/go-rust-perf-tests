@@ -4,7 +4,7 @@ cd go
 
 go run -ldflags="-s -w" .
 
-Results:
+**Results:**
 
 100000 threads finished 10000 iterrations each in 47.01 seconds: map[string]SomeData
 
@@ -18,7 +18,7 @@ cd rust
 
 cargo run --release
 
-Results:
+**Results:**
 
 100000 tasks finished 10000 iterrations each in 68.1729521s
 
