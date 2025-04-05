@@ -2,57 +2,28 @@ package main
 
 import (
 	"fmt"
-	"sync"
+	"math"
 	"time"
 )
 
-const THREADS_NUM = 100_000
+const TASKS_NUM = 100_000
 const VALUES_NUM = 10_000
 
 type SomeData struct {
 	Name string
-	Age  int32
+	Age  uint32
 }
 
-var (
-	pool      []*SomeData = make([]*SomeData, 0)
-	poolMutex sync.Mutex
-)
+func testNoPool() (total float64, min float64, max float64, avg float64) {
+	start := time.Now()
+	ch := make(chan float64)
 
-func getSomeData() *SomeData {
-	poolMutex.Lock()
-
-	poolLen := len(pool)
-	var data *SomeData
-
-	if poolLen == 0 {
-		data = &SomeData{}
-		pool = append(pool, data)
-	} else {
-		data = pool[poolLen-1]
-		pool = pool[:poolLen-1]
-	}
-	poolMutex.Unlock()
-	return data
-}
-
-func releaseSomeData(d *SomeData) {
-	poolMutex.Lock()
-	pool = append(pool, d)
-	poolMutex.Unlock()
-}
-
-func testWithStruct() {
-	var wg sync.WaitGroup
-
-	for i := range THREADS_NUM {
-		wg.Add(1)
-
-		go func(i int) {
-			defer wg.Done()
+	for range TASKS_NUM {
+		go func() {
 			dataMap := make(map[string]SomeData)
+			var sum uint64 = 0
 
-			for j := int32(0); j < VALUES_NUM; j++ {
+			for j := uint32(0); j < VALUES_NUM; j++ {
 				name := fmt.Sprintf("name-%d", j)
 
 				dataMap[name] = SomeData{
@@ -60,83 +31,71 @@ func testWithStruct() {
 					Age:  j,
 				}
 
-				_, exists := dataMap[name]
-				if exists {
-					//
+				val, exists := dataMap[name]
+				if exists && val.Name == name {
+					sum += uint64(val.Age)
 				}
 			}
-		}(i)
+			ch <- time.Since(start).Seconds()
+		}()
 	}
 
-	wg.Wait()
-}
+	taskSum := float64(0)
+	taskMin := math.MaxFloat64
+	taskMax := -math.MaxFloat64
 
-func testWithStructPtr() {
-	var wg sync.WaitGroup
+	for range TASKS_NUM {
+		taskTime := <-ch
+		taskSum += taskTime
 
-	for i := range THREADS_NUM {
-		wg.Add(1)
-
-		go func(i int) {
-			defer wg.Done()
-			dataMap := make(map[string]*SomeData)
-
-			for j := int32(0); j < VALUES_NUM; j++ {
-				name := fmt.Sprintf("name-%d", j)
-
-				dataMap[name] = &SomeData{
-					Name: name,
-					Age:  j,
-				}
-
-				_, exists := dataMap[name]
-				if exists {
-					//
-				}
-			}
-		}(i)
+		if taskMin > taskTime {
+			taskMin = taskTime
+		}
+		if taskMax < taskTime {
+			taskMax = taskTime
+		}
 	}
+	duration := time.Since(start)
 
-	wg.Wait()
+	return duration.Seconds(), taskMin, taskMax, taskSum / TASKS_NUM
 }
 
-func testWithPool() {
-	var wg sync.WaitGroup
+// func testWithPool() {
+// 	var wg sync.WaitGroup
+//  pool := Pool{}
 
-	for i := range THREADS_NUM {
-		wg.Add(1)
+// 	for i := range TASKS_NUM {
+// 		wg.Add(1)
 
-		go func(i int) {
-			defer wg.Done()
-			dataMap := make(map[string]*SomeData)
+// 		go func(i int) {
+// 			defer wg.Done()
+// 			dataMap := make(map[string]*SomeData)
 
-			for j := int32(0); j < VALUES_NUM; j++ {
-				name := fmt.Sprintf("name-%d", j)
+// 			for j := uint32(0); j < VALUES_NUM; j++ {
+// 				name := fmt.Sprintf("name-%d", j)
 
-				var data = getSomeData()
-				data.Name = name
-				data.Age = j
-				dataMap[name] = data
+// 				var data = pool.Get()
+// 				data.Name = name
+// 				data.Age = j
+// 				dataMap[name] = data
 
-				_, exists := dataMap[name]
-				if exists {
-					//
-				}
-			}
+// 				_, exists := dataMap[name]
+// 				if exists {
+// 					//
+// 				}
+// 			}
 
-			for k := range dataMap {
-				releaseSomeData(dataMap[k])
-			}
-		}(i)
-	}
+// 			for k := range dataMap {
+// 				pool.Release(dataMap[k])
+// 			}
+// 		}(i)
+// 	}
 
-	wg.Wait()
-}
+// 	wg.Wait()
+// }
 
 func main() {
-	start := time.Now()
-	testWithStruct()
-	//testWithStructPtr()
+	total, min, max, avg := testNoPool()
 	//testWithPool()
-	fmt.Printf("%d threads finished %d iterrations each in %.2f seconds\n", THREADS_NUM, VALUES_NUM, time.Since(start).Seconds())
+	fmt.Printf("%d tasks, %d iterrations in each: finished in %.2fs, one task avg %.2fs, min %.2fs, max %.2fs\n", TASKS_NUM, VALUES_NUM, total, avg, min, max)
 }

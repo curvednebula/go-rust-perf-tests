@@ -6,9 +6,7 @@ go run -ldflags="-s -w" .
 
 **Results:**
 
-100000 threads finished 10000 iterrations each in 47.01 seconds: map[string]SomeData
-
-100000 threads finished 10000 iterrations each in 58.05 seconds: map[string]*SomeData
+100'000 tasks, 10'000 iterrations in each: finished in 46.32s, one task avg 23.59s, min 0.02s, max 46.32s
 
 RAM: 1.5Gb - 4Gb
 
@@ -20,6 +18,6 @@ cargo run --release
 
 **Results:**
 
-100000 tasks finished 10000 iterrations each in 68.1729521s
+100'000 tasks, 10'000 iterrations in each: finished in 67.85s, one task avg 33.237s, min 0.007s, max 67.854s
 
 RAM: 35Mb - 60Mb
