@@ -22,4 +22,4 @@ cargo run --release
 
 100000 tasks finished 10000 iterrations each in 68.1729521s
 
-RAM: Avg: 35-60Mb
+RAM: 35Mb - 60Mb
