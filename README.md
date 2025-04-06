@@ -32,7 +32,7 @@ With this optimization RAM usage dropped to 35Mb while execution time increased 
 
 I've also realized that creating all 100'000 tasks at once is not what would happen in a server that receives requests with an interval.
 
-So I've simulated steady steam of request by creating 10 tasks each millisec (10'000 requests per sec). This improved Go's RAM usage: from 4Gb to 400-500Mb. If we created 10 tasks each 3 millisec (~3000 requests per sec), RAM usage drops to 120Mb without any optimizations mentioned above.
+So I've simulated steady stream of request by creating 10 tasks each millisec (10'000 requests per sec). This improved Go's RAM usage: from 4Gb to 400-500Mb. If we created 10 tasks each 3 millisec (~3000 requests per sec), RAM usage drops to 120Mb without any optimizations mentioned above.
 
 The optimizations are still needed though: to prevent Go service from eating all your RAM when CPU can't keep up with incoming requests. It seems Rust's tokio tasks handle this automatically, but in Go we need to be more careful.
 
