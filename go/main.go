@@ -107,7 +107,7 @@ func runTest(name string, testFn func(ch chan float64)) {
 			testFn(ch)
 			if taskIdx%TASKS_IN_BUNCH == 0 {
 				// simulate requests coming sequentially not all at once
-				// time.Sleep(TIME_BETWEEN_BUNCHES_MS * time.Millisecond)
+				time.Sleep(TIME_BETWEEN_BUNCHES_MS * time.Millisecond)
 			}
 		}
 	}()
@@ -136,15 +136,12 @@ func runTest(name string, testFn func(ch chan float64)) {
 func main() {
 	// runTest("With pure goroutines.", goroutineOnly)
 
-	// workers = NewCpuWorkers[float64](0)
 	// test2Name := fmt.Sprintf("With CPU workers: %d workers.", workers.Num)
 	// runTest(test2Name, goroutineWithCpuWorkers)
 
-	workers = NewCpuWorkers[float64](0)
 	test3Name := fmt.Sprintf("With CPU workers only: %d workers.", workers.Num)
 	runTest(test3Name, cpuWorkersOnly)
 
-	// workers = NewCpuWorkers[float64](0)
 	// test4Name := fmt.Sprintf("With CPU workers and pool: %d workers.", cpu.NumWorkers)
 	// runTest(test4Name, cpuWorkersAndPool)
 }
