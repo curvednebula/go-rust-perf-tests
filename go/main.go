@@ -101,7 +101,10 @@ func runTest(name string, testFn func(ch chan float64)) {
 	start := time.Now()
 	ch := make(chan float64)
 
-	testFn(ch)
+	// don't interrupt main thread when running the test as it need to start receving from channel asap
+	go func() {
+		testFn(ch)
+	}()
 
 	taskSum := float64(0)
 	taskMin := math.MaxFloat64
@@ -125,6 +128,9 @@ func runTest(name string, testFn func(ch chan float64)) {
 }
 
 func main() {
+	//
+	time.Sleep(3 * time.Second)
+
 	// runTest("With pure goroutines.", testOnlyGoroutines)
 
 	test2Name := fmt.Sprintf("With CPU workers: %d workers.", cpu.NumWorkers)
