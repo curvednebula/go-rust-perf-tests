@@ -9,13 +9,15 @@ import (
 
 const TASKS_NUM = 100_000
 const ITEMS_NUM = 10_000
+const TASKS_IN_BUNCH = 10
+const TIME_BETWEEN_BUNCHES_MS = 1
 
 type SomeData struct {
 	Name string
 	Age  uint32
 }
 
-var cpu *cpuWorkers[float64] = NewCpuWorkers[float64]()
+var workers *cpuWorkers[float64] = NewCpuWorkers[float64](0)
 
 // var pool *Pool[SomeData] = new(Pool[SomeData])
 
@@ -71,34 +73,26 @@ func doWorkWithPool() float64 {
 	return time.Since(start).Seconds()
 }
 
-func testOnlyGoroutines(ch chan float64) {
-	for range TASKS_NUM {
-		go func() {
-			ch <- doWork()
-		}()
-	}
+func goroutinesOnly(ch chan float64) {
+	go func() {
+		ch <- doWork()
+	}()
 }
 
-func testWithCpuWorkers(ch chan float64) {
-	for range TASKS_NUM {
-		go func() {
-			ch <- cpu.DoWork(doWork)
-		}()
-	}
+func goroutineWithCpuWorkers(ch chan float64) {
+	go func() {
+		workers.DoWork(ch, doWork)
+	}()
 }
 
-func testWithCpuWorkersOnly(ch chan float64) {
-	for range TASKS_NUM {
-		ch <- cpu.DoWork(doWork)
-	}
+func cpuWorkersOnly(ch chan float64) {
+	workers.DoWork(ch, doWork)
 }
 
-func testWithPoolAndCpuWorkers(ch chan float64) {
-	for range TASKS_NUM {
-		go func() {
-			ch <- cpu.DoWork(doWorkWithPool)
-		}()
-	}
+func cpuWorkersAndPool(ch chan float64) {
+	go func() {
+		workers.DoWork(ch, doWorkWithPool)
+	}()
 }
 
 func runTest(name string, testFn func(ch chan float64)) {
@@ -109,7 +103,13 @@ func runTest(name string, testFn func(ch chan float64)) {
 
 	// don't block main thread when running the test as it needs to start receving from channel asap
 	go func() {
-		testFn(ch)
+		for taskIdx := range TASKS_NUM {
+			testFn(ch)
+			if taskIdx%TASKS_IN_BUNCH == 0 {
+				// simulate requests coming sequentially not all at once
+				// time.Sleep(TIME_BETWEEN_BUNCHES_MS * time.Millisecond)
+			}
+		}
 	}()
 
 	taskSum := float64(0)
@@ -134,14 +134,17 @@ func runTest(name string, testFn func(ch chan float64)) {
 }
 
 func main() {
-	// runTest("With pure goroutines.", testOnlyGoroutines)
+	// runTest("With pure goroutines.", goroutineOnly)
 
-	test2Name := fmt.Sprintf("With CPU workers: %d workers.", cpu.NumWorkers)
-	runTest(test2Name, testWithCpuWorkers)
+	// workers = NewCpuWorkers[float64](0)
+	// test2Name := fmt.Sprintf("With CPU workers: %d workers.", workers.Num)
+	// runTest(test2Name, goroutineWithCpuWorkers)
 
-	test3Name := fmt.Sprintf("With CPU workers only: %d workers.", cpu.NumWorkers)
-	runTest(test3Name, testWithCpuWorkersOnly)
+	workers = NewCpuWorkers[float64](0)
+	test3Name := fmt.Sprintf("With CPU workers only: %d workers.", workers.Num)
+	runTest(test3Name, cpuWorkersOnly)
 
-	test4Name := fmt.Sprintf("With CPU workers and pool: %d workers.", cpu.NumWorkers)
-	runTest(test4Name, testWithPoolAndCpuWorkers)
+	// workers = NewCpuWorkers[float64](0)
+	// test4Name := fmt.Sprintf("With CPU workers and pool: %d workers.", cpu.NumWorkers)
+	// runTest(test4Name, cpuWorkersAndPool)
 }

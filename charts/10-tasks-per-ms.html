@@ -34,14 +34,20 @@
       labels: ['Avg'],
       datasets: [
         {
-          label: 'Go',
+          label: 'Go (goroutines)',
           data: [46],
           backgroundColor: '#27548A',
           borderWidth: 0
         },
         {
+          label: 'Go (hybrid)',
+          data: [74],
+          backgroundColor: '#27548A',
+          borderWidth: 0
+        },
+        {
           label: 'Go (workers)',
-          data: [69],
+          data: [62],
           backgroundColor: '#27548A',
           borderWidth: 0
         },
@@ -65,29 +71,35 @@
     const myChart = new Chart(ctx, { type: 'bar', data: data1, options: opt });
 
     const data2 = {
-      labels: ['Min', 'Max'],
+      labels: ['Max'],
       datasets: [
         {
-          label: 'Go',
-          data: [2000, 4000],
+          label: 'Go (goroutines)',
+          data: [400],
+          backgroundColor: '#27548A',
+          borderWidth: 0
+        },
+        {
+          label: 'Go (hybrid)',
+          data: [500],
           backgroundColor: '#27548A',
           borderWidth: 0
         },
         {
           label: 'Go (workers)',
-          data: [200, 1000],
+          data: [35],
           backgroundColor: '#27548A',
           borderWidth: 0
         },
         {
           label: 'Rust (std malloc)',
-          data: [35, 60],
+          data: [60],
           backgroundColor: '#DDA853',
           borderWidth: 0
         },
         {
           label: 'Rust (mimalloc)',
-          data: [77, 78],
+          data: [78],
           backgroundColor: '#DDA853',
           borderWidth: 0
         }

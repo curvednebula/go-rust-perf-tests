@@ -5,28 +5,28 @@ import (
 )
 
 type cpuWorkers[T any] struct {
-	sem        chan struct{}
-	NumWorkers int
+	sem chan struct{}
+	Num int
 }
 
-func NewCpuWorkers[T any]() *cpuWorkers[T] {
-	workersNum := runtime.NumCPU()
-
+// numWorkers = 0 -> num workers as CPU threads
+func NewCpuWorkers[T any](numWorkers int) *cpuWorkers[T] {
+	if numWorkers <= 0 {
+		numWorkers = runtime.NumCPU()
+	}
 	w := &cpuWorkers[T]{
-		sem:        make(chan struct{}, workersNum),
-		NumWorkers: workersNum,
+		sem: make(chan struct{}, numWorkers),
+		Num: numWorkers,
 	}
 	return w
 }
 
-// will block until free CPU thread is available to execute the workFn()
-func (w *cpuWorkers[T]) DoWork(workFn func() T) T {
+// will execute workFn() when free CPU thread is available
+func (w *cpuWorkers[T]) DoWork(resultCh chan<- T, workFn func() T) {
 	w.sem <- struct{}{} // acquire slot
-	ch := make(chan T, 1)
 
 	go func() {
 		defer func() { <-w.sem }() // release slot
-		ch <- workFn()
+		resultCh <- workFn()
 	}()
-	return <-ch
 }
