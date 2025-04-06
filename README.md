@@ -2,6 +2,8 @@
 
 We run 100'000 tasks, in each task 10'000 small structs created, inserted into and retrieved from the hash-map by their keys.
 
+Note that this is CPU only operation. No blocking I/O calls.
+
 **Key points:**
 
 Rust was 30% slower with the default malloc, but almost identical to Go with mimalloc. While the biggest difference was massive RAM usage by Go: 2-4Gb vs Rust is only 35-60Mb. But why? Is that simply because GC can't keep up with so many goroutines allocating structs?
