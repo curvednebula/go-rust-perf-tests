@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"math"
-	"sync"
 	"time"
 )
 
@@ -18,14 +17,6 @@ type SomeData struct {
 }
 
 var workers *cpuWorkers[float64] = NewCpuWorkers[float64](0)
-
-// var pool *Pool[SomeData] = new(Pool[SomeData])
-
-var pool = sync.Pool{
-	New: func() any {
-		return new(SomeData)
-	},
-}
 
 func doWork() float64 {
 	start := time.Now()
@@ -48,32 +39,7 @@ func doWork() float64 {
 	return time.Since(start).Seconds()
 }
 
-func doWorkWithPool() float64 {
-	start := time.Now()
-	dataMap := make(map[string]*SomeData)
-	var sum uint64 = 0
-
-	for j := uint32(0); j < ITEMS_NUM; j++ {
-		name := fmt.Sprintf("name-%d", j)
-
-		var data = pool.Get().(*SomeData)
-		data.Name = name
-		data.Age = j
-		dataMap[name] = data
-
-		val, exists := dataMap[name]
-		if exists && val.Name == name {
-			sum += uint64(val.Age)
-		}
-	}
-
-	for k := range dataMap {
-		pool.Put(dataMap[k])
-	}
-	return time.Since(start).Seconds()
-}
-
-func goroutinesOnly(ch chan float64) {
+func goroutineOnly(ch chan float64) {
 	go func() {
 		ch <- doWork()
 	}()
@@ -87,12 +53,6 @@ func goroutineWithCpuWorkers(ch chan float64) {
 
 func cpuWorkersOnly(ch chan float64) {
 	workers.DoWork(ch, doWork)
-}
-
-func cpuWorkersAndPool(ch chan float64) {
-	go func() {
-		workers.DoWork(ch, doWorkWithPool)
-	}()
 }
 
 func runTest(name string, testFn func(ch chan float64)) {
@@ -134,14 +94,12 @@ func runTest(name string, testFn func(ch chan float64)) {
 }
 
 func main() {
-	// runTest("With pure goroutines.", goroutineOnly)
+	// test1Name := fmt.Sprintf("%d goroutines...", TASKS_NUM)
+	// runTest(test1Name, goroutineOnly)
 
-	// test2Name := fmt.Sprintf("With CPU workers: %d workers.", workers.Num)
+	// test2Name := fmt.Sprintf("%d goroutines + %d CPU workers...", TASKS_NUM, workers.Num)
 	// runTest(test2Name, goroutineWithCpuWorkers)
 
-	test3Name := fmt.Sprintf("With CPU workers only: %d workers.", workers.Num)
+	test3Name := fmt.Sprintf("%d CPU workers...", workers.Num)
 	runTest(test3Name, cpuWorkersOnly)
-
-	// test4Name := fmt.Sprintf("With CPU workers and pool: %d workers.", cpu.NumWorkers)
-	// runTest(test4Name, cpuWorkersAndPool)
 }
