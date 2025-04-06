@@ -60,7 +60,7 @@ Platform: Windows 10 Pro, Intel(R) Core(TM) i7-9850H CPU @2.60GHz
 
 ## Start 10 tasks each millisec
 
-Start 10 tasks each millisec, wich is ~10'000 tasks per second
+Start 100'000 tasks in 10 seconds.
 
 **Go (goroutines):**
  - Goroutines only: finished in 46.8229s, task avg 0.1611s, min 0.0000s, max 3.0188s, RAM: up to 400Mb
@@ -75,7 +75,7 @@ Start 10 tasks each millisec, wich is ~10'000 tasks per second
 
 ## Instant Burst
 
-Just start all 100'000 tasks as quick as possible.
+Start all 100'000 tasks as quick as possible.
 
 **Go (goroutines):**
  - Goroutines only: finished in 46.61s, task avg 16.77s, min 0.00s, max 46.31s, RAM: 2000Mb - 4000Mb
