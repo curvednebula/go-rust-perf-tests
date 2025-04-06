@@ -8,7 +8,7 @@ import (
 )
 
 const TASKS_NUM = 100_000
-const VALUES_NUM = 10_000
+const ITEMS_NUM = 10_000
 
 type SomeData struct {
 	Name string
@@ -30,7 +30,7 @@ func doWork() float64 {
 	dataMap := make(map[string]SomeData)
 	var sum uint64 = 0
 
-	for j := uint32(0); j < VALUES_NUM; j++ {
+	for j := uint32(0); j < ITEMS_NUM; j++ {
 		name := fmt.Sprintf("name-%d", j)
 
 		dataMap[name] = SomeData{
@@ -51,7 +51,7 @@ func doWorkWithPool() float64 {
 	dataMap := make(map[string]*SomeData)
 	var sum uint64 = 0
 
-	for j := uint32(0); j < VALUES_NUM; j++ {
+	for j := uint32(0); j < ITEMS_NUM; j++ {
 		name := fmt.Sprintf("name-%d", j)
 
 		var data = pool.Get().(*SomeData)
@@ -107,7 +107,7 @@ func runTest(name string, testFn func(ch chan float64)) {
 	start := time.Now()
 	ch := make(chan float64, 128)
 
-	// don't interrupt main thread when running the test as it need to start receving from channel asap
+	// don't block main thread when running the test as it needs to start receving from channel asap
 	go func() {
 		testFn(ch)
 	}()

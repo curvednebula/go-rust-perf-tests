@@ -10,7 +10,7 @@ Notice that on average Rust finished a task in 0.006s (max in 0.053s), while Go'
 
 Since Go runs so many tasks in paralell it keeps thousands of hash maps filled with thousands of structs in the RAM. GC can't even free this memory because application is still using it. Rust on the other hand only creates couple of hash maps at once.
 
-So to solve the problem I've created a simple utility: CPU workers. It limits number of parallel tasks executed to be not more than the number of CPU threads. With this optimization Go's memory usage dropped to 1000Mb at start and it drops down to 200Mb as test runs. This is at least 4 times better than before. And probably the initial burst is just the result of GC warming up.
+To solve the problem I've created a simple utility: CPU workers. It limits number of parallel tasks executed to be not more than the number of CPU threads. With this optimization Go's memory usage dropped to 1000Mb at start and it goes down to 200Mb as test runs. This is at least 4 times better than before. Interestingly enough with this optimization execution time increased from 46 sec to 70 sec, which almost identical to Rust's time with default malloc.
 
 **Go:**
 
