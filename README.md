@@ -1,6 +1,6 @@
 # Test Description
 
-We run 100'000 tasks, in each task 10'000 small structs created, inserted into a hash-map, and after that retrieved from the hash-map by the key.
+We run 100'000 tasks, in each task 10'000 small structs created, inserted into and retrieved from the hash-map by their keys.
 
 **Key points:**
 
