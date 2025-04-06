@@ -6,9 +6,11 @@ We run 100'000 tasks, in each task 10'000 small structs created, inserted into a
 
 Rust was 30% slower with the default malloc, but almost identical to Go with mimalloc. While the biggest difference was massive RAM usage by Go: 2-4Gb vs Rust only 30-60Mb. But why? Is that simply because GC can't keep up with so many goroutines allocating structs?
 
-Notice that on average Rust finished a task in 0.006s (max in 0.053s), while Go's average task duration was 16s! A massive differrence! If both finished all tasks at roughtly the same time that could only mean that Go is trying to execute thousands of tasks in parallel sharing limited number of CPU threads available, but Rust is running only couple of them at once. This explains why Rust's average task duration is so short. 
+Notice that on average Rust finished a task in 0.006s (max in 0.053s), while Go's average task duration was 16s! A massive differrence! If both finished all tasks at roughtly the same time that could only mean that Go is execute thousands of tasks in parallel sharing limited amount of CPU threads available, but Rust is running only couple of them at once. This explains why Rust's average task duration is so short.
 
-But since Go runs thousand of tasks in paralell it keep thousands of hash maps filled with thousands of structs in the RAM. Remember Go's average task duration was 16 seconds. GC can't even free this memory because application is still using it. Rust on the other hand only creates couple of hash maps at once.
+Since Go runs so many tasks in paralell it keeps thousands of hash maps filled with thousands of structs in the RAM. GC can't even free this memory because application is still using it. Rust on the other hand only creates couple of hash maps at once.
+
+So to solve the problem I've created a simple utility: CPU workers. It limits number of parallel tasks executed to be not more than the number of CPU threads. With this optimization Go's memory usage dropped to 1000Mb at start and it drops down to 200Mb as test runs. This is at least 4 times better than before. And probably the initial burst is just the result of GC warming up.
 
 **Go:**
 
