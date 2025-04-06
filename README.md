@@ -10,7 +10,11 @@ Notice that on average Rust finished a task in 0.006s (max in 0.053s), while Go'
 
 Since Go runs so many tasks in paralell it keeps thousands of hash maps filled with thousands of structs in the RAM. GC can't even free this memory because application is still using it. Rust on the other hand only creates couple of hash maps at once.
 
+## Optimization 1 ##
+
 To solve the problem I've created a simple utility: CPU workers. It limits number of parallel tasks executed to be not more than the number of CPU threads. With this optimization Go's memory usage dropped to 1000Mb at start and it goes down to 200Mb as test runs. This is at least 4 times better than before. Interestingly enough with this optimization execution time increased from 46 sec to 70 sec, which almost identical to Rust's time with default malloc.
+
+
 
 **Go:**
 
@@ -36,7 +40,7 @@ Start 10 tasks each millisec, wich is ~10'000 tasks per second
 
 **Go (goroutines):**
  - Goroutines only: finished in 46.8229s, task avg 0.1611s, min 0.0000s, max 3.0188s, RAM: up to 400Mb
- - Goroutins + CPU workers: finished in 74.9265s, task avg 0.0090s, min 0.0000s, max 0.0906s, RAM: up to 500Mb
+ - Goroutines + CPU workers: finished in 74.9265s, task avg 0.0090s, min 0.0000s, max 0.0906s, RAM: up to 500Mb
  - CPU workers only: finished in 62.1834s, task avg 0.0074s, min 0.0005s, max 0.1315s, RAM: up to 35Mb
 
 **Rust (tokio tasks):**
@@ -50,7 +54,7 @@ Start 10 tasks each millisec, wich is ~10'000 tasks per second
 Just start all 100'000 tasks as quick as possible.
 
 **Go (goroutines):**
- - Pure goroutines: finished in 46.61s, task avg 16.77s, min 0.00s, max 46.31s, RAM: 2000Mb - 4000Mb
+ - Goroutines only: finished in 46.61s, task avg 16.77s, min 0.00s, max 46.31s, RAM: 2000Mb - 4000Mb
  - Goroutines + CPU workers: finished in 69.23s, task avg 0.0079s, min 0.0000s, max 0.0972s, RAM 200-1000Mb (1000Mb at start, tend to go down to 200Mb when running)
  - CPU workers only: finished in 60.7386s, task avg 0.0072s, min 0.0022s, max 0.0399s, RAM: up to 35Mb
 
