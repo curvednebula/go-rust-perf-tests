@@ -1,8 +1,8 @@
 # Test Description
 
-We run 100'000 tasks, in each task 10'000 small structs created, inserted into and retrieved from the hash-map by their keys.
+In the test we run 100'000 tasks, in each task 10'000 small structs created, inserted into and retrieved from a hash-map by their keys.
 
-Note that this is CPU only operation. No blocking I/O calls.
+Note that this is CPU only operation. No blocking I/O calls. I'm evaluating Go and Rust performance for writing high-performance multiplayer server. In the main game-loop it will not perform any I/O calls. All requests will be processed using game data in the RAM.
 
 ## First run results
 
