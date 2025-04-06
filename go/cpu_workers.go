@@ -19,7 +19,7 @@ func NewCpuWorkers[T any]() *cpuWorkers[T] {
 
 func (w *cpuWorkers[T]) DoWork(workFn func() T) T {
 	w.sem <- struct{}{} // acquire slot
-	ch := make(chan T)
+	ch := make(chan T, 1)
 
 	go func() {
 		defer func() { <-w.sem }() // release slot

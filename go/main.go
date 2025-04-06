@@ -87,6 +87,12 @@ func testWithCpuWorkers(ch chan float64) {
 	}
 }
 
+func testWithCpuWorkersOnly(ch chan float64) {
+	for range TASKS_NUM {
+		ch <- cpu.DoWork(doWork)
+	}
+}
+
 func testWithPoolAndCpuWorkers(ch chan float64) {
 	for range TASKS_NUM {
 		go func() {
@@ -99,7 +105,7 @@ func runTest(name string, testFn func(ch chan float64)) {
 	fmt.Println(name)
 
 	start := time.Now()
-	ch := make(chan float64)
+	ch := make(chan float64, 128)
 
 	// don't interrupt main thread when running the test as it need to start receving from channel asap
 	go func() {
@@ -128,14 +134,14 @@ func runTest(name string, testFn func(ch chan float64)) {
 }
 
 func main() {
-	//
-	time.Sleep(3 * time.Second)
-
 	// runTest("With pure goroutines.", testOnlyGoroutines)
 
 	test2Name := fmt.Sprintf("With CPU workers: %d workers.", cpu.NumWorkers)
 	runTest(test2Name, testWithCpuWorkers)
 
-	test3Name := fmt.Sprintf("With CPU workers and pool: %d workers.", cpu.NumWorkers)
-	runTest(test3Name, testWithPoolAndCpuWorkers)
+	test3Name := fmt.Sprintf("With CPU workers only: %d workers.", cpu.NumWorkers)
+	runTest(test3Name, testWithCpuWorkersOnly)
+
+	test4Name := fmt.Sprintf("With CPU workers and pool: %d workers.", cpu.NumWorkers)
+	runTest(test4Name, testWithPoolAndCpuWorkers)
 }
