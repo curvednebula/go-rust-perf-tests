@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"strconv"
 	"time"
 )
 
@@ -24,7 +25,7 @@ func doWork() float64 {
 	var sum uint64 = 0
 
 	for j := uint32(0); j < ITEMS_NUM; j++ {
-		name := fmt.Sprintf("name-%d", j)
+		name := "name-" + strconv.Itoa(int(j))
 
 		dataMap[name] = SomeData{
 			Name: name,
@@ -97,8 +98,8 @@ func main() {
 	// test1Name := fmt.Sprintf("%d goroutines...", TASKS_NUM)
 	// runTest(test1Name, goroutineOnly)
 
-	// test2Name := fmt.Sprintf("%d goroutines + %d CPU workers...", TASKS_NUM, workers.Num)
-	// runTest(test2Name, goroutineWithCpuWorkers)
+	test2Name := fmt.Sprintf("%d goroutines + %d CPU workers...", TASKS_NUM, workers.Num)
+	runTest(test2Name, goroutineWithCpuWorkers)
 
 	test3Name := fmt.Sprintf("%d CPU workers...", workers.Num)
 	runTest(test3Name, cpuWorkersOnly)
