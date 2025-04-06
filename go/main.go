@@ -95,8 +95,8 @@ func runTest(name string, testFn func(ch chan float64)) {
 }
 
 func main() {
-	// test1Name := fmt.Sprintf("%d goroutines...", TASKS_NUM)
-	// runTest(test1Name, goroutineOnly)
+	test1Name := fmt.Sprintf("%d goroutines...", TASKS_NUM)
+	runTest(test1Name, goroutineOnly)
 
 	test2Name := fmt.Sprintf("%d goroutines + %d CPU workers...", TASKS_NUM, workers.Num)
 	runTest(test2Name, goroutineWithCpuWorkers)
