@@ -21,7 +21,7 @@ func NewCpuWorkers[T any](numWorkers int) *cpuWorkers[T] {
 	return w
 }
 
-// will execute workFn() when free CPU thread is available
+// will block until free CPU thread is available to execute workFn()
 func (w *cpuWorkers[T]) DoWork(resultCh chan<- T, workFn func() T) {
 	w.sem <- struct{}{} // acquire slot
 

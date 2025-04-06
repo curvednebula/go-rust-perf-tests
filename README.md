@@ -8,13 +8,23 @@ Rust was 30% slower with the default malloc, but almost identical to Go with mim
 
 Notice that on average Rust finished a task in 0.006s (max in 0.053s), while Go's average task duration was 16s! A massive differrence! If both finished all tasks at roughtly the same time that could only mean that Go is executing thousands of tasks in parallel sharing limited amount of CPU threads available, but Rust is running only couple of them at once. This explains why Rust's average task duration is so short.
 
+## Optimization 1: goroutines with CPU workers ##
+
 Since Go runs so many tasks in paralell it keeps thousands of hash maps filled with thousands of structs in the RAM. GC can't even free this memory because application is still using it. Rust on the other hand only creates couple of hash maps at once.
 
-## Optimization 1 ##
+To solve this problem I've created a simple utility called "CPU workers". It will run a task/function in a goroutine, but it will not create more goroutines than CPU threads available.
 
-To solve the problem I've created a simple utility: CPU workers. It limits number of parallel tasks executed to be not more than the number of CPU threads. With this optimization Go's memory usage dropped to 1000Mb at start and it goes down to 200Mb as test runs. This is at least 4 times better than before. Interestingly enough with this optimization execution time increased from 46 sec to 70 sec, which almost identical to Rust's time with default malloc.
+Note that I'm still starting 100'000 goroutines for each task in the beginning of the test. But instead of running the task inside each goroutine directly I use CPU workers to execute my task function. This makes most goroutines to wait limited number of CPU workers to finish and therefore they won't allocate thousands of hash maps at the same time.
 
+With this optimization Go's memory usage dropped to 1000Mb at the beginning of the test and went down to 200Mb as test aproached the end. Which makes sence: as goroutines finish they release the memory. This is at least 4 times better than before.
 
+## Optimization 2: CPU workers only ##
+
+With the optimization #1 we are still creating 100'000 goroutines in the very beginning, most of which will wait 12 CPU workers to execute their tasks (my CPU has 12 threads). 
+
+Let's use only CPU workers so we'll never create more than 12 goroutines at once. 
+
+With this optimization RAM usage dropped to 35Mb while execution time increased from 46s to 60s. I think this is a very reasonable price to pay! Note that we are still doing the same work: creating 100'000 goroutines, but this time not all at onces.
 
 **Go:**
 
