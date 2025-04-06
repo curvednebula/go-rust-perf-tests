@@ -1,6 +1,6 @@
 # Test Description
 
-We run 100'000 parallel tasks, in each task 10'000 small structs created, inserted into a hash-map, and after that retrieved from the hash-map by the key.
+We run 100'000 tasks, in each task 10'000 small structs created, inserted into a hash-map, and after that retrieved from the hash-map by the key.
 
 **Go:**
 
@@ -18,12 +18,19 @@ cargo run --release
 
 # Test Results
 
+Windows 10 Pro, Intel(R) Core(TM) i7-9850H CPU @2.60GHz
+
 **Go (goroutines):**
- - finished in 46.32s, one task avg 23.59s, min 0.02s, max 46.32s
- - RAM: 1.5Gb - 4Gb
+ - finished in 46.61s, task avg 16.77s, min 0.00s, max 46.31s
+    RAM: 1.5Gb - 4Gb
 
 **Rust (tokio tasks):**
- - finished in 67.85s, one task avg 33.237s, min 0.007s, max 67.854s
- - RAM: 35Mb - 60Mb
+ - With default memalloc:
+    finished in 67.67s, task avg 6ms, min 3ms, max 53ms
+    RAM: 35Mb - 60Mb
+
+ - With mimalloc:
+    finished in 48.65s, task avg 4ms, min 3ms, max 59ms
+    RAM: 78Mb
 
 ![Chart](assets/chart1.png)

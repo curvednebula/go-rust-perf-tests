@@ -14,9 +14,10 @@ type SomeData struct {
 	Age  uint32
 }
 
-func testNoPool(start time.Time, ch chan float64) {
+func testNoPool(ch chan float64) {
 	for range TASKS_NUM {
 		go func() {
+			start := time.Now()
 			dataMap := make(map[string]SomeData)
 			var sum uint64 = 0
 
@@ -41,11 +42,12 @@ func testNoPool(start time.Time, ch chan float64) {
 	}
 }
 
-func testWithPool(start time.Time, ch chan float64) {
+func testWithPool(ch chan float64) {
 	pool := new(Pool[SomeData])
 
 	for range TASKS_NUM {
 		go func() {
+			start := time.Now()
 			dataMap := make(map[string]*SomeData)
 			var sum uint64 = 0
 
@@ -75,8 +77,8 @@ func main() {
 	start := time.Now()
 	ch := make(chan float64)
 
-	testNoPool(start, ch)
-	//testWithPool(start, ch)
+	testNoPool(ch)
+	//testWithPool(ch)
 
 	taskSum := float64(0)
 	taskMin := math.MaxFloat64
