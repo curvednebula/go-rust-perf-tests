@@ -26,7 +26,7 @@ With the optimization #1 we are still creating 100'000 goroutines in the very be
 
 Let's use only CPU workers so we'll never create more than 12 goroutines at once. 
 
-With this optimization RAM usage dropped to 35Mb while execution time increased from 46s to 60s. I think this is a very reasonable price to pay! Note that we are still doing the same work: creating 100'000 goroutines, but this time not all at onces.
+With this optimization RAM usage dropped to 35Mb while execution time increased from 46s to 60s. I think this is a very reasonable price to pay! Note that we are still doing the same work: creating 100'000 goroutines, but this time not all at once.
 
 ## Instant burst vs continous flow of requests ##
 
