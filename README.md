@@ -4,7 +4,9 @@ We run 100'000 tasks, in each task 10'000 small structs created, inserted into a
 
 **Key points:**
 
-Rust was 30% slower with the default malloc, but almost identical to Go with mimalloc. While the biggest difference was massive RAM usage by Go: 2-4Gb vs Rust only 30-60Mb. I've noticed that on vaerage Rust finished a task in 0.006s (max 0.053s), while Go's average task took 16s! Massive differrence. If both finished all tasks at roughtly the same time that means that Go is trying to execute thousand of tasks in parallel (sharing the same 12 CPU threads I have), while Rust is most likely running only 12 task at once then moving the next one. This explains why Rust's average task duration is much shorter than Go's. 
+Rust was 30% slower with the default malloc, but almost identical to Go with mimalloc. While the biggest difference was massive RAM usage by Go: 2-4Gb vs Rust only 30-60Mb. But why? Is that simply because GC can't keep up with so many goroutines allocating structs?
+
+Notice that on average Rust finishes a task in 0.006s (max in 0.053s), while Go's average task duration is 16s! Massive differrence! If both finished all tasks at roughtly the same time that means that Go is trying to execute thousands of them in parallel (sharing the same 12 CPU threads), while Rust is most likely running only 12 tasks at once. This explains why Rust's average task duration is so short. 
 
 **Go:**
 
