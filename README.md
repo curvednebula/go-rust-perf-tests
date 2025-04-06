@@ -21,11 +21,11 @@ cargo run --release
 Windows 10 Pro, Intel(R) Core(TM) i7-9850H CPU @2.60GHz
 
 **Go (goroutines):**
- - finished in 46.61s, task avg 16.77s, min 0.00s, max 46.31s, RAM: 1.5Gb - 4Gb
+ - With pure goroutines: finished in 46.61s, task avg 16.77s, min 0.00s, max 46.31s, RAM: 2Gb - 4Gb
+ - With CPU workers: finished in 69.23s, task avg 0.0079s, min 0.0000s, max 0.0972s, RAM 200-1000Mb
 
 **Rust (tokio tasks):**
  - With default memalloc: finished in 67.67s, task avg 6ms, min 3ms, max 53ms, RAM: 35Mb - 60Mb
-
  - With mimalloc: finished in 48.65s, task avg 4ms, min 3ms, max 59ms, RAM: 78Mb
 
 ![Chart](assets/chart1.png)

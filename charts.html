@@ -35,16 +35,29 @@
       datasets: [
         {
           label: 'Go',
-          data: [46.32],
+          data: [46],
           backgroundColor: '#27548A',
           borderWidth: 0
         },
         {
-          label: 'Rust',
-          data: [67.85],
+          label: 'Go (workers)',
+          data: [69],
+          backgroundColor: '#27548A',
+          borderWidth: 0
+        },
+        {
+          label: 'Rust (std malloc)',
+          data: [67],
           backgroundColor: '#DDA853',
           borderWidth: 0
-        }
+        },
+        {
+          label: 'Rust (mimalloc)',
+          data: [48],
+          backgroundColor: '#DDA853',
+          borderWidth: 0
+        },
+
       ]
     };
 
@@ -56,13 +69,25 @@
       datasets: [
         {
           label: 'Go',
-          data: [1500, 4000],
+          data: [2000, 4000],
           backgroundColor: '#27548A',
           borderWidth: 0
         },
         {
-          label: 'Rust',
+          label: 'Go (workers)',
+          data: [200, 1000],
+          backgroundColor: '#27548A',
+          borderWidth: 0
+        },
+        {
+          label: 'Rust (std malloc)',
           data: [35, 60],
+          backgroundColor: '#DDA853',
+          borderWidth: 0
+        },
+        {
+          label: 'Rust (mimalloc)',
+          data: [77, 78],
           backgroundColor: '#DDA853',
           borderWidth: 0
         }

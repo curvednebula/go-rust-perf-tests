@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"sync"
 	"time"
 )
 
@@ -14,71 +15,93 @@ type SomeData struct {
 	Age  uint32
 }
 
-func testNoPool(ch chan float64) {
+var cpu *cpuWorkers[float64] = NewCpuWorkers[float64]()
+
+// var pool *Pool[SomeData] = new(Pool[SomeData])
+
+var pool = sync.Pool{
+	New: func() any {
+		return new(SomeData)
+	},
+}
+
+func doWork() float64 {
+	start := time.Now()
+	dataMap := make(map[string]SomeData)
+	var sum uint64 = 0
+
+	for j := uint32(0); j < VALUES_NUM; j++ {
+		name := fmt.Sprintf("name-%d", j)
+
+		dataMap[name] = SomeData{
+			Name: name,
+			Age:  j,
+		}
+
+		val, exists := dataMap[name]
+		if exists && val.Name == name {
+			sum += uint64(val.Age)
+		}
+	}
+	return time.Since(start).Seconds()
+}
+
+func doWorkWithPool() float64 {
+	start := time.Now()
+	dataMap := make(map[string]*SomeData)
+	var sum uint64 = 0
+
+	for j := uint32(0); j < VALUES_NUM; j++ {
+		name := fmt.Sprintf("name-%d", j)
+
+		var data = pool.Get().(*SomeData)
+		data.Name = name
+		data.Age = j
+		dataMap[name] = data
+
+		val, exists := dataMap[name]
+		if exists && val.Name == name {
+			sum += uint64(val.Age)
+		}
+	}
+
+	for k := range dataMap {
+		pool.Put(dataMap[k])
+	}
+	return time.Since(start).Seconds()
+}
+
+func testOnlyGoroutines(ch chan float64) {
 	for range TASKS_NUM {
 		go func() {
-			start := time.Now()
-			dataMap := make(map[string]SomeData)
-			var sum uint64 = 0
-
-			for j := uint32(0); j < VALUES_NUM; j++ {
-				name := fmt.Sprintf("name-%d", j)
-
-				dataMap[name] = SomeData{
-					Name: name,
-					Age:  j,
-				}
-
-				val, exists := dataMap[name]
-				if exists && val.Name == name {
-					sum += uint64(val.Age)
-				}
-			}
-			// for k := range dataMap {
-			// 	delete(dataMap, k)
-			// }
-			ch <- time.Since(start).Seconds()
+			ch <- doWork()
 		}()
 	}
 }
 
-func testWithPool(ch chan float64) {
-	pool := new(Pool[SomeData])
-
+func testWithCpuWorkers(ch chan float64) {
 	for range TASKS_NUM {
 		go func() {
-			start := time.Now()
-			dataMap := make(map[string]*SomeData)
-			var sum uint64 = 0
-
-			for j := uint32(0); j < VALUES_NUM; j++ {
-				name := fmt.Sprintf("name-%d", j)
-
-				var data = pool.Get()
-				data.Name = name
-				data.Age = j
-				dataMap[name] = data
-
-				val, exists := dataMap[name]
-				if exists && val.Name == name {
-					sum += uint64(val.Age)
-				}
-			}
-
-			for k := range dataMap {
-				pool.Release(dataMap[k])
-			}
-			ch <- time.Since(start).Seconds()
+			ch <- cpu.DoWork(doWork)
 		}()
 	}
 }
 
-func main() {
+func testWithPoolAndCpuWorkers(ch chan float64) {
+	for range TASKS_NUM {
+		go func() {
+			ch <- cpu.DoWork(doWorkWithPool)
+		}()
+	}
+}
+
+func runTest(name string, testFn func(ch chan float64)) {
+	fmt.Println(name)
+
 	start := time.Now()
 	ch := make(chan float64)
 
-	testNoPool(ch)
-	//testWithPool(ch)
+	testFn(ch)
 
 	taskSum := float64(0)
 	taskMin := math.MaxFloat64
@@ -98,5 +121,15 @@ func main() {
 	total := time.Since(start).Seconds()
 	taskAvg := taskSum / TASKS_NUM
 
-	fmt.Printf("%d tasks, %d items: finished in %.2fs, one task avg %.2fs, min %.2fs, max %.2fs\n", TASKS_NUM, VALUES_NUM, total, taskAvg, taskMin, taskMax)
+	fmt.Printf(" - finished in %.4fs, task avg %.4fs, min %.4fs, max %.4fs\n", total, taskAvg, taskMin, taskMax)
+}
+
+func main() {
+	// runTest("With pure goroutines.", testOnlyGoroutines)
+
+	test2Name := fmt.Sprintf("With CPU workers: %d workers.", cpu.NumWorkers)
+	runTest(test2Name, testWithCpuWorkers)
+
+	test3Name := fmt.Sprintf("With CPU workers and pool: %d workers.", cpu.NumWorkers)
+	runTest(test3Name, testWithPoolAndCpuWorkers)
 }
