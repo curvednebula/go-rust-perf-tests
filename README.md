@@ -6,6 +6,10 @@ Note that this is CPU only operation. No blocking I/O calls. I'm evaluating Go a
 
 ## First run results
 
+Platform: 
+
+**NOTE:** My tests were done on Windows/Intel CPU. A few people reported different results on MacOS with Apple CPU, where Rust version finished execution faster.
+
 Rust was 30% slower with the default malloc, but almost identical to Go with mimalloc. While the biggest difference was massive RAM usage by Go: 2-4Gb vs Rust is only 35-60Mb. But why? Is that simply because GC can't keep up with so many goroutines allocating structs?
 
 Notice that on average Rust finished a task in 0.006s (max in 0.053s), while Go's average task duration was 16s! A massive differrence! If both finished all tasks at roughtly the same time that could only mean that Go is executing thousands of tasks in parallel sharing limited amount of CPU threads available, but Rust is running only couple of them at once. This explains why Rust's average task duration is so short.
@@ -22,19 +26,19 @@ With this optimization Go's memory usage dropped to 1000Mb at the beginning of t
 
 ## Optimization 2: CPU workers only ##
 
-With the optimization #1 we are still creating 100'000 goroutines in the very beginning, most of which will wait 12 CPU workers to execute their tasks (my CPU has 12 threads). 
+With the optimization #1 we are still creating 100'000 goroutines, most of which will wait 12 CPU workers (my CPU has 12 threads).
 
-Let's use only CPU workers so we'll never create more than 12 goroutines at once. 
+Let's use only CPU workers so we'll never create more goroutines than nessessary. 
 
-With this optimization RAM usage dropped to 35Mb while execution time increased from 46s to 60s. I think this is a very reasonable price to pay! Note that we are still doing the same work: creating 100'000 goroutines, but this time not all at once.
+With this change RAM usage dropped to 35Mb while execution time increased from 46s to 60s. I think this is a very reasonable price to pay. Note that we are still doing the same work: creating 100'000 goroutines, but not all at once.
 
 ## Instant burst vs continuous flow of requests ##
 
-I've also realized that creating all 100'000 tasks at once is not what would happen in a server that receives requests with an interval.
+I've also realized that creating all 100'000 tasks at once in the beggining of the test is not what would happen in a multiplayer game server.
 
-So I've simulated steady stream of request by creating 10 tasks each millisec (10'000 requests per sec). This improved Go's RAM usage: from 4Gb to 400-500Mb. If we created 10 tasks each 3 millisec (~3000 requests per sec), RAM usage drops to 120Mb without any optimizations mentioned above.
+So I've simulated steady stream of request by creating 10 tasks each millisec (10'000 requests per sec). This decreased Go's RAM usage from 4Gb to 400-500Mb. If we create 10 tasks each 3 millisec (~3000 requests per sec), RAM usage drops to 120Mb even without any optimization above.
 
-The optimizations are still needed though: to prevent Go service from eating all your RAM when CPU can't keep up with incoming requests. It seems Rust's tokio handles this test the right way out of the box. In Go we need to be more careful. Still, the optimization implemented is very simple, so I wouldn't call it a problem.
+The optimizations are still needed to prevent Go server from eating up all your memory when CPU load is close to 100%. It seems Rust's tokio handles 100% CPU load gracefully out of the box. In Go we need to be more careful. Still, the optimization required is very simple, so I wouldn't call it a problem.
 
 ## How to run the test
 
