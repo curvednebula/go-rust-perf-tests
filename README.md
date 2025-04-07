@@ -64,7 +64,7 @@ Platform: Windows 10 Pro, Intel(R) Core(TM) i7-9850H CPU @2.60GHz
 
 ## Start 10 new tasks each millisec
 
-Start 100'000 tasks in 10 seconds.
+This test simulates steady flow of requets until all 100'000 tasks started, which takes about 10 seconds in the beginning of the test. Then we wait all of them to finish.
 
 **Go (goroutines):**
  - Goroutines only: finished in 46.8229s, task avg 0.1611s, min 0.0000s, max 3.0188s, RAM: up to 400Mb
@@ -79,7 +79,7 @@ Start 100'000 tasks in 10 seconds.
 
 ## Instant Burst
 
-Start all 100'000 tasks as quick as possible.
+This test starts all 100'000 tasks as quick as possible. Then waits all of them to finish.
 
 **Go (goroutines):**
  - Goroutines only: finished in 46.61s, task avg 16.77s, min 0.00s, max 46.31s, RAM: 2000Mb - 4000Mb
