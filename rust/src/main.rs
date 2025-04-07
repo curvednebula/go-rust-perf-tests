@@ -15,8 +15,7 @@ struct SomeData {
     num: u32,
 }
 
-#[tokio::main]
-async fn main() {
+async fn run_test() {
     let start = Instant::now();
     let mut join_set = JoinSet::new();
 
@@ -27,7 +26,7 @@ async fn main() {
             let mut _sum: u64 = 0;
 
             for j in 0..ITEMS_NUM {
-                let name = format!("name-{}", j);
+                let name = j.to_string(); // same performance: format!("{}", j);
 
                 map.insert(
                     name.clone(),
@@ -77,12 +76,17 @@ async fn main() {
     let avg_time = all_tasks_time / (num_results as u128);
 
     println!(
-        "{} tasks, {} items: finished in {:?}, task avg {:?}, min {:?}, max {:?}",
-        num_results,
-        ITEMS_NUM,
+        "- finished in {:?}, task avg {:?}, min {:?}, max {:?}",
         total_duration,
         Duration::from_millis(avg_time as u64),
         Duration::from_millis(min_time as u64),
         Duration::from_millis(max_time as u64)
     );
+}
+
+#[tokio::main]
+async fn main() {
+    run_test().await;
+    run_test().await;
+    run_test().await;
 }
