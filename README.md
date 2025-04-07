@@ -62,7 +62,7 @@ cargo run --release
 
 Platform: Windows 10 Pro, Intel(R) Core(TM) i7-9850H CPU @2.60GHz
 
-## Start 10 tasks each millisec
+## Start 10 new tasks each millisec
 
 Start 100'000 tasks in 10 seconds.
 
