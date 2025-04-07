@@ -38,7 +38,7 @@ So I've simulated steady stream of request by creating 10 tasks each millisec (1
 
 ## Final thoughts
 
-The results of the test indicate that Go application need extra care when CPU load approaches 100% utilization. Rust's tokio handles it gracefully out of the box. Still, the optimization required in Go was very simple, so I wouldn't call it a problem.
+The test results showed that Go application need extra care when CPU load approaches 100% utilization. Rust's tokio handles it gracefully out of the box. Still, the optimization required in Go was very simple, so I wouldn't call it a problem.
 
 ## How to run the test
 
