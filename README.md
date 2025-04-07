@@ -20,7 +20,7 @@ To solve this problem I've created a simple utility called "CPU workers". It wil
 
 Note that I'm still starting 100'000 goroutines for each task in the beginning of the test. But instead of running the task inside each goroutine directly I call CPU worker from goroutine to execute my task function. This makes most goroutines to wait while limited number of CPU workers execute tasks and therefore they won't allocate thousands of hash maps simultaneously.
 
-With this optimization Go's memory usage dropped to 1000Mb at the beginning of the test and went down to 200Mb as test aproached the end. Which makes sence: as goroutines finish they release the memory. This is at least 4 times improvement, but still way worse than Rust.
+With this optimization Go's memory usage dropped to 1000Mb at the beginning of the test and went down to 200Mb as test aproached the end. Which makes sence: more goroutines finished - more memory is released. This is at least 4 times better than before, but still far away from Rust.
 
 ## Optimization 2: CPU workers only ##
 
@@ -36,7 +36,9 @@ I've also realized that creating all 100'000 tasks at once in the beggining of t
 
 So I've simulated steady stream of request by creating 10 tasks each millisec (10'000 requests per sec). This decreased Go's RAM usage from 4Gb to 400-500Mb. If we create 10 tasks each 3 millisec (~3000 requests per sec), RAM usage drops to 120Mb even without any optimization above.
 
-The optimizations are still needed to prevent Go server from eating up all your memory when CPU load is close to 100%. It seems Rust's tokio handles 100% CPU load gracefully out of the box. In Go we need to be more careful. Still, the optimization required is very simple, so I wouldn't call it a problem.
+## Final thoughts
+
+The results of the test indicate that Go application need extra care when CPU load approaches 100% utilization. Rust's tokio handles it gracefully out of the box. Still, the optimization required in Go was very simple, so I wouldn't call it a problem.
 
 ## How to run the test
 
