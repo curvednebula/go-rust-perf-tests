@@ -77,7 +77,7 @@ This test simulates steady flow of requets until all 100'000 tasks started, whic
 
  ![Chart](assets/10-tasks-per-ms.png)
 
-## Instant Burst
+## Instant burst
 
 This test starts all 100'000 tasks as quick as possible. Then waits all of them to finish.
 
