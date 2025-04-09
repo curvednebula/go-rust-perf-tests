@@ -4,7 +4,7 @@ In the test we run 100'000 tasks, in each task 10'000 small structs created, ins
 
 Note that this is CPU only operation. No blocking I/O calls. I'm evaluating Go and Rust to write high-performance multiplayer server. In the main game-loop the server will not perform any I/O calls. All requests will be processed using game data in the RAM.
 
-## First run results
+## First run
 
 **NOTE:** The tests were executed on Windows/Intel CPU. A few people reported different results on MacOS with Apple M CPU, where Rust performed better.
 
