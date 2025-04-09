@@ -1,4 +1,10 @@
-## How to run the test
+# Test description
+
+In the test we run 100'000 tasks, in each task 10'000 small structs created, inserted into and retrieved from a hash-map.
+
+No blocking I/O calls. I'm evaluating Go and Rust for writing high-performance multiplayer server. In the main game-loop all requests will be processed using game data in the RAM.
+
+## How to run
 
 **Go:**
 ```
@@ -61,13 +67,6 @@ This test starts 100'000 tasks as quick as possible. Then waits all to finish.
 
 
 ![Chart](charts/instant-burst.png)
-
-
-# Test description
-
-In the test we run 100'000 tasks, in each task 10'000 small structs created, inserted into and retrieved from a hash-map.
-
-No blocking I/O calls. I'm evaluating Go and Rust for writing high-performance multiplayer server. In the main game-loop all requests will be processed using game data in the RAM.
 
 ## First run
 
