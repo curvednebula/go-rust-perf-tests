@@ -6,7 +6,7 @@ No blocking I/O calls. I'm evaluating Go and Rust for writing high-performance m
 
 ## First run
 
-**NOTE:** The tests were executed on Windows/Intel CPU. A few people reported different results on MacOS with Apple M CPU, where Rust performed better.
+**NOTE:** The tests were executed on Windows/Intel CPU. A few people reported different results on MacOS with Apple M CPU, where Rust performed better, while not significantly. You can run the test yourself to verify the results.
 
 Rust was 30% slower with the default malloc. While the biggest difference was massive RAM usage by Go: 2-4Gb vs Rust's only 35-60Mb. But why? Is that simply because GC could't keep up with so many goroutines allocating memory?
 
