@@ -81,10 +81,14 @@ Platform: Windows 10, Intel Core i7 CPU
 This test simulates 10'000 requests per sec until 100'000 tasks started. Then waits all to finish.
 
 **Go:**
- - Unrestricted goroutines: finished in **46.82s**, task avg 0.1611s, min 0.0000s, max 3.0188s, **RAM: up to 400Mb**
- - Goroutines + 12 CPU workers: finished in **74.92s**, task avg 0.0090s, min 0.0000s, max 0.0906s, **RAM: up to 500Mb**
- - 12 CPU workers: finished in **62.18s**, task avg 0.0074s, min 0.0005s, max 0.1315s, **RAM: up to 35Mb**
- - 60 CPU workers: finished in **46.93s**, task avg 0.0084s, min 0.0005s, max 0.1527s, **RAM: up to 85Mb**
+
+| Test                        | Total Time | Task Avg | RAM Usage |
+|-----------------------------|------------|----------|-----------|
+| Unrestricted goroutines     | 46.82s     | 0.16s    | 400Mb     |
+| Goroutines + 12 CPU workers | 74.92s     | 0.0090s  | 500Mb     |
+| 12 CPU workers              | 62.18s     | 0.0074s  | 35Mb      |
+| 60 CPU workers              | 46.93s     | 0.0084s  | 85Mb      |
+
 
 **Rust (tokio tasks):**
  - With std malloc: finished in **66.40s**, task avg 6ms, min 4ms, max 43ms, **RAM: up to 57Mb**
