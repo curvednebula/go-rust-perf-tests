@@ -89,7 +89,7 @@ This test simulates steady flow of requets until all 100'000 tasks started, whic
  - With std malloc: finished in 66.4028708s, task avg 6ms, min 4ms, max 43ms, RAM: up to 57Mb
  - With mimalloc: finished in 47.7435647s, task avg 4ms, min 3ms, max 39ms, RAM: up to 77Mb
 
- ![Chart](assets/10-tasks-per-ms.png)
+ ![Chart](charts/10-tasks-per-ms.png)
 
 ## Instant burst
 
@@ -104,5 +104,5 @@ This test starts all 100'000 tasks as quick as possible. Then waits all of them 
  - With std memalloc: finished in 67.67s, task avg 6ms, min 3ms, max 53ms, RAM: 35Mb - 60Mb
  - With mimalloc: finished in 48.65s, task avg 4ms, min 3ms, max 59ms, RAM: 78Mb
 
-![Chart](assets/instant-burst.png)
+![Chart](charts/instant-burst.png)
 
