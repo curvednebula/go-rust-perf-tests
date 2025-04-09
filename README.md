@@ -81,7 +81,7 @@ Platform: Windows 10, Intel Core i7 CPU
 This test simulates 10'000 requests per sec until 100'000 tasks started. Then waits all to finish.
 
 **Go:**
- - Pure goroutines: finished in **46.82s**, task avg 0.1611s, min 0.0000s, max 3.0188s, **RAM: up to 400Mb**
+ - Unrestricted goroutines: finished in **46.82s**, task avg 0.1611s, min 0.0000s, max 3.0188s, **RAM: up to 400Mb**
  - Goroutines + 12 CPU workers: finished in **74.92s**, task avg 0.0090s, min 0.0000s, max 0.0906s, **RAM: up to 500Mb**
  - 12 CPU workers: finished in **62.18s**, task avg 0.0074s, min 0.0005s, max 0.1315s, **RAM: up to 35Mb**
  - 60 CPU workers: finished in **46.93s**, task avg 0.0084s, min 0.0005s, max 0.1527s, **RAM: up to 85Mb**
@@ -97,7 +97,7 @@ This test simulates 10'000 requests per sec until 100'000 tasks started. Then wa
 This test starts 100'000 tasks as quick as possible. Then waits all to finish.
 
 **Go:**
- - Pure goroutines: finished in **46.61s**, task avg 16.77s, min 0.00s, max 46.31s, **RAM: 2000Mb - 4000Mb**
+ - Unrestricted goroutines: finished in **46.61s**, task avg 16.77s, min 0.00s, max 46.31s, **RAM: 2000Mb - 4000Mb**
  - Goroutines + CPU workers: finished in **69.23s**, task avg 0.0079s, min 0.0000s, max 0.0972s, **RAM 200-1000Mb**
  - 12 CPU workers: finished in **60.73s**, task avg 0.0072s, min 0.0022s, max 0.0399s, **RAM: up to 35Mb**
  - 60 CPU workers: finished in **46.69s**, task avg 0.0092s, min 0.0005s, max 0.0424s, **RAM: up to 85Mb**
