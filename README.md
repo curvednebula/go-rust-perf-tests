@@ -1,16 +1,12 @@
 ## How to run the test
 
 **Go:**
-
-Edit main.go to enable/disable different test types.
-
 ```
 cd go
 go run -ldflags="-s -w" .
 ```
 
 **Rust:**
-
 ```
 cd rust
 cargo run --release
