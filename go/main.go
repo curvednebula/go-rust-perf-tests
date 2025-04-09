@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"runtime"
 	"strconv"
 	"time"
 )
@@ -38,11 +39,11 @@ func doWork() float64 {
 	return time.Since(start).Seconds()
 }
 
-func Test1() {
+func Test(numWorkers int) {
 	start := time.Now()
-	workers := NewCpuWorkersPool[float64](60)
+	workers := NewCpuWorkersPool[float64](numWorkers)
 
-	fmt.Printf("Test 1: %d CPU workers...\n", workers.Num)
+	fmt.Printf("%d CPU workers...\n", workers.Num)
 
 	// don't block main thread when running the test as it needs to start receving from channel asap
 	go func() {
@@ -77,7 +78,7 @@ func Test1() {
 }
 
 func main() {
-	Test1()
-	Test1()
-	Test1()
+	Test(runtime.NumCPU() * 5)
+	Test(runtime.NumCPU())
+	Test(runtime.NumCPU() * 10)
 }
