@@ -18,7 +18,7 @@ I've received a suggestion to use mimalloc instead of default memory allocator. 
 
 ## Go optimizations
 
-**1: goroutines with CPU workers**
+**1. Goroutines with CPU workers**
 
 Since Go runs so many tasks in paralell it keeps thousands of hash maps filled with thousands of structs in the RAM. GC can't even free this memory because it is still is use. Rust on the other hand only creates couple of hash maps at once.
 
@@ -28,7 +28,7 @@ Note that I'm still starting 100'000 goroutines - one per task. But instead of r
 
 With this optimization Go's memory usage dropped to 1000Mb at the beginning of the test and went down to 200Mb as test aproached the end. Which makes sence: more goroutines finished - more memory is released. This is at least 4 times better than before, but still far away from Rust.
 
-**2: CPU workers only**
+**2. CPU workers only**
 
 With the optimization #1 we are still creating 100'000 goroutines, most of which will wait 12 CPU workers (my CPU has 12 threads).
 
@@ -36,11 +36,11 @@ Let's use only CPU workers so we'll never create more goroutines than nessessary
 
 With this change RAM usage dropped to 35Mb while execution time increased from 46s to 60s. I think this is a very reasonable price to pay. Note that we are still doing the same work: creating 100'000 goroutines, but not all at once.
 
-**3: More CPU Workers**
+**3. More CPU Workers**
 
 I've also played with number of CPU Workers running in parallel. Limiting them to number of CPU threads (12 in my case) sounded reasonable. But running 60 workers gave solid 25% improvement. This change also increased RAM usage a bit - now it is similar to Rust with mimalloc: ~80Mb.
 
-**4: Pool of CPU workers**
+**4. Pool of CPU workers**
 
 Instead of creating new gorotine every time, we can create a pool of goroutines and reuse them for multiple tasks. This can potentially remove overhead of creating and destroying 100'000 goroutines. While in reality this only gave a small performance gain. So goroutines are indeed low-overhead primitives.
 
