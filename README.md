@@ -1,4 +1,4 @@
-# Test Description
+# Test description
 
 In the test we run 100'000 tasks, in each task 10'000 small structs created, inserted into and retrieved from a hash-map by their keys.
 
@@ -6,13 +6,19 @@ Note that this is CPU only operation. No blocking I/O calls. I'm evaluating Go a
 
 ## First run results
 
-**NOTE:** The tests were executed on Windows/Intel CPU. A few people reported different results on MacOS with Apple CPU, where Rust version finished execution faster.
+**NOTE:** The tests were executed on Windows/Intel CPU. A few people reported different results on MacOS with Apple M CPU, where Rust performed better.
 
-Rust was 30% slower with the default malloc, but almost identical to Go with mimalloc. While the biggest difference was massive RAM usage by Go: 2-4Gb vs Rust is only 35-60Mb. But why? Is that simply because GC can't keep up with so many goroutines allocating structs?
+Rust was 30% slower with the default malloc. While the biggest difference was massive RAM usage by Go: 2-4Gb vs Rust is only 35-60Mb. But why? Is that simply because GC can't keep up with so many goroutines allocating structs?
 
-Notice that on average Rust finished a task in 0.006s (max in 0.053s), while Go's average task duration was 16s! A massive differrence! If both finished all tasks at roughtly the same time that could only mean that Go is executing thousands of tasks in parallel sharing limited amount of CPU threads available, but Rust is running only couple of them at once. This explains why Rust's average task duration is so short.
+## Rust optimizations
 
-## Optimization 1: goroutines with CPU workers ##
+I've got a suggestion to use mimalloc instead of default memory allocator. With mimalloc Rust gave much better results, which were approximately the same as Go. Note that on MacOS Rust performed even better.
+
+## Go optimizations
+
+**1: goroutines with CPU workers**
+
+I've notice that on average Rust finished a task in 0.006s (max in 0.053s), while Go's average task duration was 16s! A massive differrence! If both finished all tasks at roughtly the same time that could only mean that Go is executing thousands of tasks in parallel sharing limited amount of CPU threads available, but Rust is running only couple of them at once. This explains why Rust's average task duration is so short.
 
 Since Go runs so many tasks in paralell it keeps thousands of hash maps filled with thousands of structs in the RAM. GC can't even free this memory because application is still using it. Rust on the other hand only creates couple of hash maps at once.
 
@@ -22,7 +28,7 @@ Note that I'm still starting 100'000 goroutines for each task in the beginning o
 
 With this optimization Go's memory usage dropped to 1000Mb at the beginning of the test and went down to 200Mb as test aproached the end. Which makes sence: more goroutines finished - more memory is released. This is at least 4 times better than before, but still far away from Rust.
 
-## Optimization 2: CPU workers only ##
+**2: CPU workers only**
 
 With the optimization #1 we are still creating 100'000 goroutines, most of which will wait 12 CPU workers (my CPU has 12 threads).
 
@@ -30,7 +36,15 @@ Let's use only CPU workers so we'll never create more goroutines than nessessary
 
 With this change RAM usage dropped to 35Mb while execution time increased from 46s to 60s. I think this is a very reasonable price to pay. Note that we are still doing the same work: creating 100'000 goroutines, but not all at once.
 
-## Instant burst vs continuous flow of requests ##
+**3: Pool of CPU workers**
+
+Instead of creating new gorotines every time we can create pool of goroutines and reuse the same goroutine for multiple tasks. This removes overhead of creating and destroying 100'000 goroutines. This only gave a small performance improvement (~2 sec). So goroutines are really low-overhead primitives.
+
+**4: More CPU Workers**
+
+I've also played with number CPU Workers running in parallel. Limiting them to 12 CPU threads sounded obvious, but 60 workers improved performance a bit more. The cost is additional RAM 
+
+## Instant burst vs continuous flow of requests
 
 I've also realized that creating all 100'000 tasks at once in the beggining of the test is not what would happen in a multiplayer game server.
 
@@ -38,7 +52,7 @@ So I've simulated steady stream of request by creating 10 tasks each millisec (1
 
 ## Final thoughts
 
-The test results showed that Go's goroutines need an extra care when CPU load approaches 100% utilization. Rust's tokio threads handle it gracefully out of the box. Still, the optimization required for Go was very simple, so I wouldn't call it a problem.
+The test results showed that Go's goroutines need an extra care when CPU load approaches 100% utilization. Whereas Rust's tokio handles it gracefully out of the box. Still, the optimization required for Go was very simple. Many of them were experiments that I don't use in the final version, so I wouldn't call it a problem.
 
 ## How to run the test
 

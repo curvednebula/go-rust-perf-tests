@@ -39,11 +39,11 @@ func doWork() float64 {
 	return time.Since(start).Seconds()
 }
 
-func Test(numWorkers int) {
+func Test(numWorkers int, recycle bool) {
 	start := time.Now()
-	workers := NewCpuWorkersPool[float64](numWorkers)
+	workers := NewCpuWorkers[float64](numWorkers, recycle)
 
-	fmt.Printf("%d CPU workers...\n", workers.Num)
+	fmt.Printf("%d CPU workers (recycle: %t)...\n", workers.Num, recycle)
 
 	// don't block main thread when running the test as it needs to start receving from channel asap
 	go func() {
@@ -78,7 +78,8 @@ func Test(numWorkers int) {
 }
 
 func main() {
-	Test(runtime.NumCPU() * 5)
-	Test(runtime.NumCPU())
-	Test(runtime.NumCPU() * 10)
+	Test(runtime.NumCPU()*5, true)
+	Test(runtime.NumCPU()*5, false)
+	Test(runtime.NumCPU(), true)
+	Test(runtime.NumCPU(), false)
 }
