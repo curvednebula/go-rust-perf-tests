@@ -105,7 +105,7 @@ This test starts 100'000 tasks as quick as possible. Then waits all to finish.
 
 **Go:**
 
-| Test                        | Total Time | Task Avg | RAM Usage --|
+| Test                        | Total Time | Task Avg | RAM Usage   |
 |-----------------------------|------------|----------|-------------|
 | Unrestricted goroutines     | 46.61s     | 16770ms  | 2000-4000Mb |
 | Goroutines + 12 CPU workers | 69.23s     | 8ms      | 200-1000Mb  |
