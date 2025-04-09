@@ -38,7 +38,7 @@ With this change RAM usage dropped to 35Mb while execution time increased from 4
 
 **3: More CPU Workers**
 
-I've also played with number of CPU Workers running in parallel. Limiting them to number of CPU threads (12 in my case) sounds obvious. But running 60 workers (CPU workers * 5) gave 25% improvement. While this also increased RAM usage. Now it is the same as in Rust.
+I've also played with number of CPU Workers running in parallel. Limiting them to number of CPU threads (12 in my case) sounded reasonable. But running 60 workers (CPU workers * 5) gave solid 25% improvement. While this also increased RAM usage. Now it is the similar to Rust with mimalloc: ~80Mb.
 
 **4: Pool of CPU workers**
 
