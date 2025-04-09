@@ -12,7 +12,7 @@ Rust was 30% slower with the default malloc. While the biggest difference was ma
 
 ## Rust optimizations
 
-I've got a suggestion to use mimalloc instead of default memory allocator. With mimalloc Rust gave much better results, which were approximately the same as Go on my Windows machine. But again, note that on MacOS Rust performed even better.
+I've received a suggestion to use mimalloc instead of default memory allocator. With mimalloc Rust gave much better results, which were approximately the same as Go on my Windows machine. But again, note that on MacOS Rust performed even better.
 
 ## Go optimizations
 
