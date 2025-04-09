@@ -52,7 +52,7 @@ So I've simulated steady stream of request by creating 10 tasks each millisec (1
 
 ## Final thoughts
 
-The test showed that Go's goroutines need an extra care when CPU load approaches 100% utilization. Whereas Rust's tokio handles it gracefully out of the box. Still, the optimization required for Go was very simple. Note that some of the optimizations I described above were just experiments that didn't give significant results - so are not required. In fact you only need CPU workers (optimization #3).
+The test showed that Go's goroutines need an extra care when CPU load approaches 100% utilization. Whereas Rust's "tokio" runtime handles it gracefully out of the box. Still, the optimization required for Go was very simple. Note that some of the optimizations I described above were just experiments that didn't give significant results - so are not required. In fact you only need CPU workers (optimization #3).
 
 ## How to run the test
 
