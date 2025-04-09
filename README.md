@@ -81,13 +81,14 @@ Platform: Windows 10, Intel Core i7 CPU
 This test simulates steady flow of requets until all 100'000 tasks started, which takes about 10 seconds in the beginning of the test. Then we wait all of them to finish.
 
 **Go (goroutines):**
- - Goroutines only: finished in 46.8229s, task avg 0.1611s, min 0.0000s, max 3.0188s, RAM: up to 400Mb
- - Goroutines + CPU workers: finished in 74.9265s, task avg 0.0090s, min 0.0000s, max 0.0906s, RAM: up to 500Mb
- - CPU workers only: finished in 62.1834s, task avg 0.0074s, min 0.0005s, max 0.1315s, RAM: up to 35Mb
+ - Pure goroutines: finished in **46.82s**, task avg 0.1611s, min 0.0000s, max 3.0188s, **RAM: up to 400Mb**
+ - Goroutines + 12 CPU workers: finished in **74.92s**, task avg 0.0090s, min 0.0000s, max 0.0906s, **RAM: up to 500Mb**
+ - 12 CPU workers: finished in **62.18s**, task avg 0.0074s, min 0.0005s, max 0.1315s, **RAM: up to 35Mb**
+ - 60 CPU workers: finished in **46.93s**, task avg 0.0084s, min 0.0005s, max 0.1527s, **RAM: up to 85Mb**
 
 **Rust (tokio tasks):**
- - With std malloc: finished in 66.4028708s, task avg 6ms, min 4ms, max 43ms, RAM: up to 57Mb
- - With mimalloc: finished in 47.7435647s, task avg 4ms, min 3ms, max 39ms, RAM: up to 77Mb
+ - With std malloc: finished in **66.40s**, task avg 6ms, min 4ms, max 43ms, RAM: up to 57Mb
+ - With mimalloc: finished in **47.74s**, task avg 4ms, min 3ms, max 39ms, RAM: up to 77Mb
 
  ![Chart](charts/10-tasks-per-ms.png)
 
@@ -96,13 +97,14 @@ This test simulates steady flow of requets until all 100'000 tasks started, whic
 This test starts all 100'000 tasks as quick as possible. Then waits all of them to finish.
 
 **Go (goroutines):**
- - Goroutines only: finished in 46.61s, task avg 16.77s, min 0.00s, max 46.31s, RAM: 2000Mb - 4000Mb
- - Goroutines + CPU workers: finished in 69.23s, task avg 0.0079s, min 0.0000s, max 0.0972s, RAM 200-1000Mb (1000Mb at start, tend to go down to 200Mb when running)
- - CPU workers only: finished in 60.7386s, task avg 0.0072s, min 0.0022s, max 0.0399s, RAM: up to 35Mb
+ - Pure goroutines: finished in **46.61s**, task avg 16.77s, min 0.00s, max 46.31s, **RAM: 2000Mb - 4000Mb**
+ - Goroutines + CPU workers: finished in **69.23s**, task avg 0.0079s, min 0.0000s, max 0.0972s, **RAM 200-1000Mb**
+ - 12 CPU workers: finished in **60.73s**, task avg 0.0072s, min 0.0022s, max 0.0399s, **RAM: up to 35Mb**
+ - 60 CPU workers: finished in **46.69s**, task avg 0.0092s, min 0.0005s, max 0.0424s, **RAM: up to 85Mb**
 
 **Rust (tokio tasks):**
- - With std memalloc: finished in 67.67s, task avg 6ms, min 3ms, max 53ms, RAM: 35Mb - 60Mb
- - With mimalloc: finished in 48.65s, task avg 4ms, min 3ms, max 59ms, RAM: 78Mb
+ - With std memalloc: finished in **67.67s**, task avg 6ms, min 3ms, max 53ms, **RAM: 35Mb - 60Mb**
+ - With mimalloc: finished in **48.65s**, task avg 4ms, min 3ms, max 59ms, **RAM: up to 78Mb**
 
 ![Chart](charts/instant-burst.png)
 
