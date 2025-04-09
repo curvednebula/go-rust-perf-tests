@@ -48,11 +48,11 @@ Instead of creating new gorotine every time, we can create a pool of goroutines 
 
 I've also realized that creating all 100'000 tasks at once in the beggining of the test is not what would happen in a multiplayer game server.
 
-So I've simulated steady stream of request by creating 10 tasks each millisec (10'000 requests per sec). This decreased Go's RAM usage from 4Gb to 400-500Mb. If we create 10 tasks each 3 millisec (~3000 requests per sec), RAM usage drops to 120Mb even without any optimization above.
+So I've simulated steady stream of request by creating 10 tasks each millisec (10'000 requests per sec). This decreased Go's RAM usage from 4Gb to 400-500Mb right away. If we create 10 tasks each 3 millisec (~3000 requests per sec), RAM usage drops to 120Mb even without any optimizations above.
 
 ## Final thoughts
 
-The test results showed that Go's goroutines need an extra care when CPU load approaches 100% utilization. Whereas Rust's tokio handles it gracefully out of the box. Still, the optimization required for Go was very simple. Many of them were experiments that I don't use in the final version, so I wouldn't call it a problem.
+The test showed that Go's goroutines need an extra care when CPU load approaches 100% utilization. Whereas Rust's tokio handles it gracefully out of the box. Still, the optimization required for Go was very simple. Note that some of the optimizations I described above were just experiments that didn't give significant results.
 
 ## How to run the test
 
