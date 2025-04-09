@@ -78,7 +78,7 @@ Platform: Windows 10, Intel Core i7 CPU
 
 ## Start 10 new tasks each millisec
 
-This test simulates steady flow of requests until 100'000 tasks started. Then waits all to finish.
+This test simulates 10'000 requests per sec until 100'000 tasks started. Then waits all to finish.
 
 **Go (goroutines):**
  - Pure goroutines: finished in **46.82s**, task avg 0.1611s, min 0.0000s, max 3.0188s, **RAM: up to 400Mb**
