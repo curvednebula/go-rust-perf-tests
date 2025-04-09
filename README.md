@@ -8,11 +8,11 @@ Note that this is CPU only operation. No blocking I/O calls. I'm evaluating Go a
 
 **NOTE:** The tests were executed on Windows/Intel CPU. A few people reported different results on MacOS with Apple M CPU, where Rust performed better.
 
-Rust was 30% slower with the default malloc. While the biggest difference was massive RAM usage by Go: 2-4Gb vs Rust is only 35-60Mb. But why? Is that simply because GC can't keep up with so many goroutines allocating structs?
+Rust was 30% slower with the default malloc. While the biggest difference was massive RAM usage by Go: 2-4Gb vs Rust's only 35-60Mb. But why? Is that simply because GC could't keep up with so many goroutines allocating memory?
 
 ## Rust optimizations
 
-I've got a suggestion to use mimalloc instead of default memory allocator. With mimalloc Rust gave much better results, which were approximately the same as Go. Note that on MacOS Rust performed even better.
+I've got a suggestion to use mimalloc instead of default memory allocator. With mimalloc Rust gave much better results, which were approximately the same as Go on my Windows machine. But again, note that on MacOS Rust performed even better.
 
 ## Go optimizations
 
