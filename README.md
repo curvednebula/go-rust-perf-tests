@@ -14,7 +14,7 @@ I've noticed that on average Rust finished a task in 0.006s (max in 0.053s), whi
 
 ## Rust optimizations
 
-I've received a suggestion to use mimalloc instead of default memory allocator. With mimalloc Rust gave much better results, which were approximately the same as Go on my Windows machine. But again, note that on MacOS Rust performed even better.
+I've received a suggestion to use mimalloc instead of default memory allocator. With mimalloc Rust showed ~30% better execution time and minor RAM usage increase.
 
 ## Go optimizations
 
