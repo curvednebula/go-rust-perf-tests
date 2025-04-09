@@ -10,7 +10,7 @@ No blocking I/O calls. I'm evaluating Go and Rust for writing high-performance m
 
 Initially Rust showed 30% worse test execution time than Go. While the biggest difference was Go's massive RAM usage: 2-4Gb vs Rust's only 35-60Mb. But why? Is that simply because GC could't keep up with so many goroutines allocating memory?
 
-I've noticed that on average Rust finished a task in 0.006s (max in 0.053s), while Go's average task duration was 16s! Big differrence! If both finished all tasks at roughtly the same time that could only mean that Go was executing thousands of tasks in parallel sharing limited amount of CPU threads. Rust was most likely running only couple of them at once, then started the next bunch, then the next one, etc. This explains why Rust's average task duration was so short and RAM usage so small.
+I've noticed that on average Rust finished a task in 0.006s (max in 0.053s), while Go's average task duration was 16s! Big differrence! If both finished all tasks at roughtly the same time that could only mean that Go was executing thousands of tasks in parallel sharing limited amount of CPU threads. Rust was most likely running only couple of them at once, then started the next bunch, then the next one, etc. This explains why Rust's average task duration was so short and RAM usage so low.
 
 ## Rust optimizations
 
