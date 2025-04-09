@@ -17,8 +17,6 @@ type SomeData struct {
 	Age  uint32
 }
 
-var workers *cpuWorkers[float64] = NewCpuWorkers[float64](0)
-
 func doWork() float64 {
 	start := time.Now()
 	dataMap := make(map[string]SomeData)
@@ -40,32 +38,16 @@ func doWork() float64 {
 	return time.Since(start).Seconds()
 }
 
-func goroutineOnly(ch chan float64) {
-	go func() {
-		ch <- doWork()
-	}()
-}
-
-func goroutineWithCpuWorkers(ch chan float64) {
-	go func() {
-		workers.DoWork(ch, doWork)
-	}()
-}
-
-func cpuWorkersOnly(ch chan float64) {
-	workers.DoWork(ch, doWork)
-}
-
-func runTest(name string, testFn func(ch chan float64)) {
-	fmt.Println(name)
-
+func Test1() {
 	start := time.Now()
-	ch := make(chan float64, 128)
+	workers := NewCpuWorkersPool[float64](60)
+
+	fmt.Printf("Test 1: %d CPU workers...\n", workers.Num)
 
 	// don't block main thread when running the test as it needs to start receving from channel asap
 	go func() {
 		for taskIdx := range TASKS_NUM {
-			testFn(ch)
+			workers.DoWork(doWork)
 			if taskIdx%TASKS_IN_BUNCH == 0 {
 				// simulate requests coming sequentially not all at once
 				time.Sleep(TIME_BETWEEN_BUNCHES_MS * time.Millisecond)
@@ -78,7 +60,7 @@ func runTest(name string, testFn func(ch chan float64)) {
 	taskMax := -math.MaxFloat64
 
 	for range TASKS_NUM {
-		taskTime := <-ch
+		taskTime := <-workers.results
 		taskSum += taskTime
 
 		if taskMin > taskTime {
@@ -95,14 +77,7 @@ func runTest(name string, testFn func(ch chan float64)) {
 }
 
 func main() {
-	// test1Name := fmt.Sprintf("%d goroutines...", TASKS_NUM)
-	// runTest(test1Name, goroutineOnly)
-
-	// test2Name := fmt.Sprintf("%d goroutines + %d CPU workers...", TASKS_NUM, workers.Num)
-	// runTest(test2Name, goroutineWithCpuWorkers)
-
-	test3Name := fmt.Sprintf("%d CPU workers...", workers.Num)
-	runTest(test3Name, cpuWorkersOnly)
-	runTest(test3Name, cpuWorkersOnly)
-	runTest(test3Name, cpuWorkersOnly)
+	Test1()
+	Test1()
+	Test1()
 }
