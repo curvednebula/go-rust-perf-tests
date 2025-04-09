@@ -24,7 +24,7 @@ Since Go runs so many tasks in paralell it keeps thousands of hash maps filled w
 
 To solve this problem I've created a simple utility called "CPU workers". It will run a task/function in a goroutine, but it will not create more goroutines than CPU threads available.
 
-Note that I'm still starting 100'000 goroutines for each task in the beginning of the test. But instead of running the task inside each goroutine directly I call CPU worker from goroutine to execute my task function. This makes most goroutines to wait while limited number of CPU workers execute tasks and therefore they won't allocate thousands of hash maps simultaneously.
+Note that I'm still starting 100'000 goroutines - one per task. But instead of running the task inside each goroutine directly I call CPU worker from goroutine to execute my task function. That means I'm running 100'000 + 12 (CPU workers) gouroutines in total. This makes most goroutines to wait while limited number of CPU workers execute tasks and therefore they won't allocate thousands of hash maps at once.
 
 With this optimization Go's memory usage dropped to 1000Mb at the beginning of the test and went down to 200Mb as test aproached the end. Which makes sence: more goroutines finished - more memory is released. This is at least 4 times better than before, but still far away from Rust.
 
