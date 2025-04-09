@@ -36,13 +36,13 @@ Let's use only CPU workers so we'll never create more goroutines than nessessary
 
 With this change RAM usage dropped to 35Mb while execution time increased from 46s to 60s. I think this is a very reasonable price to pay. Note that we are still doing the same work: creating 100'000 goroutines, but not all at once.
 
-**3: Pool of CPU workers**
+**3: More CPU Workers**
 
-Instead of creating new gorotines every time we can create pool of goroutines and reuse the same goroutine for multiple tasks. This removes overhead of creating and destroying 100'000 goroutines. This only gave a small performance improvement (~2 sec). So goroutines are really low-overhead primitives.
+I've also played with number of CPU Workers running in parallel. Limiting them to number of CPU threads (12 in my case) sounds obvious. But running 60 workers (CPU workers * 5) gave 25% improvement. While this also increased RAM usage. Now it is the same as in Rust.
 
-**4: More CPU Workers**
+**4: Pool of CPU workers**
 
-I've also played with number CPU Workers running in parallel. Limiting them to 12 CPU threads sounded obvious, but 60 workers improved performance a bit more. The cost is additional RAM 
+Instead of creating new gorotine every time, we can create a pool of goroutines and reuse them for multiple tasks. This can potentially remove overhead of creating and destroying 100'000 goroutines. While in reality this only gave a small performance gain. Barely noticable. So goroutines are indeed low-overhead primitives.
 
 ## Instant burst vs continuous flow of requests
 
