@@ -87,8 +87,8 @@ This test simulates steady flow of requets until all 100'000 tasks started, whic
  - 60 CPU workers: finished in **46.93s**, task avg 0.0084s, min 0.0005s, max 0.1527s, **RAM: up to 85Mb**
 
 **Rust (tokio tasks):**
- - With std malloc: finished in **66.40s**, task avg 6ms, min 4ms, max 43ms, RAM: up to 57Mb
- - With mimalloc: finished in **47.74s**, task avg 4ms, min 3ms, max 39ms, RAM: up to 77Mb
+ - With std malloc: finished in **66.40s**, task avg 6ms, min 4ms, max 43ms, **RAM: up to 57Mb**
+ - With mimalloc: finished in **47.74s**, task avg 4ms, min 3ms, max 39ms, **RAM: up to 77Mb**
 
  ![Chart](charts/10-tasks-per-ms.png)
 
