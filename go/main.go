@@ -80,6 +80,6 @@ func Test(numWorkers int, recycle bool) {
 func main() {
 	Test(runtime.NumCPU()*5, true)
 	Test(runtime.NumCPU()*5, false)
-	Test(runtime.NumCPU(), true)
 	Test(runtime.NumCPU(), false)
+	Test(runtime.NumCPU()*10, false)
 }
