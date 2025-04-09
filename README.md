@@ -84,15 +84,18 @@ This test simulates 10'000 requests per sec until 100'000 tasks started. Then wa
 
 | Test                        | Total Time | Task Avg | RAM Usage |
 |-----------------------------|------------|----------|-----------|
-| Unrestricted goroutines     | 46.82s     | 0.16s    | 400Mb     |
-| Goroutines + 12 CPU workers | 74.92s     | 0.0090s  | 500Mb     |
-| 12 CPU workers              | 62.18s     | 0.0074s  | 35Mb      |
-| 60 CPU workers              | 46.93s     | 0.0084s  | 85Mb      |
+| Unrestricted goroutines     | 46.82s     | 160ms    | 400Mb     |
+| Goroutines + 12 CPU workers | 74.92s     | 9ms      | 500Mb     |
+| 12 CPU workers              | 62.18s     | 7ms      | 35Mb      |
+| 60 CPU workers              | 46.93s     | 8ms      | 85Mb      |
 
 
 **Rust (tokio tasks):**
- - With std malloc: finished in **66.40s**, task avg 6ms, min 4ms, max 43ms, **RAM: up to 57Mb**
- - With mimalloc: finished in **47.74s**, task avg 4ms, min 3ms, max 39ms, **RAM: up to 77Mb**
+
+| Test             | Total Time | Task Avg | RAM Usage |
+|------------------|------------|----------|-----------|
+| With std malloc  | 66.40s     | 6ms      | 60Mb      |
+| With mimalloc    | 47.74s     | 4ms      | 78Mb      |
 
  ![Chart](charts/10-tasks-per-ms.png)
 
@@ -101,14 +104,21 @@ This test simulates 10'000 requests per sec until 100'000 tasks started. Then wa
 This test starts 100'000 tasks as quick as possible. Then waits all to finish.
 
 **Go:**
- - Unrestricted goroutines: finished in **46.61s**, task avg 16.77s, min 0.00s, max 46.31s, **RAM: 2000Mb - 4000Mb**
- - Goroutines + CPU workers: finished in **69.23s**, task avg 0.0079s, min 0.0000s, max 0.0972s, **RAM 200-1000Mb**
- - 12 CPU workers: finished in **60.73s**, task avg 0.0072s, min 0.0022s, max 0.0399s, **RAM: up to 35Mb**
- - 60 CPU workers: finished in **46.69s**, task avg 0.0092s, min 0.0005s, max 0.0424s, **RAM: up to 85Mb**
+
+| Test                        | Total Time | Task Avg | RAM Usage --|
+|-----------------------------|------------|----------|-------------|
+| Unrestricted goroutines     | 46.61s     | 16770ms  | 2000-4000Mb |
+| Goroutines + 12 CPU workers | 69.23s     | 8ms      | 200-1000Mb  |
+| 12 CPU workers              | 60.73s     | 7ms      | 35Mb        |
+| 60 CPU workers              | 46.69s     | 9ms      | 85Mb        |
 
 **Rust (tokio tasks):**
- - With std memalloc: finished in **67.67s**, task avg 6ms, min 3ms, max 53ms, **RAM: 35Mb - 60Mb**
- - With mimalloc: finished in **48.65s**, task avg 4ms, min 3ms, max 59ms, **RAM: up to 78Mb**
+
+| Test             | Total Time | Task Avg | RAM Usage |
+|------------------|------------|----------|-----------|
+| With std malloc  | 67.67s     | 6ms      | 60Mb      |
+| With mimalloc    | 48.65s     | 4ms      | 78Mb      |
+
 
 ![Chart](charts/instant-burst.png)
 
