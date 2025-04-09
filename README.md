@@ -42,7 +42,7 @@ I've also played with number of CPU Workers running in parallel. Limiting them t
 
 **4: Pool of CPU workers**
 
-Instead of creating new gorotine every time, we can create a pool of goroutines and reuse them for multiple tasks. This can potentially remove overhead of creating and destroying 100'000 goroutines. While in reality this only gave a small performance gain. Barely noticable. So goroutines are indeed low-overhead primitives.
+Instead of creating new gorotine every time, we can create a pool of goroutines and reuse them for multiple tasks. This can potentially remove overhead of creating and destroying 100'000 goroutines. While in reality this only gave a small performance gain. So goroutines are indeed low-overhead primitives.
 
 ## Instant burst vs continuous flow of requests
 
