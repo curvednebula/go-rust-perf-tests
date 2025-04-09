@@ -2,7 +2,7 @@
 
 In the test we run 100'000 tasks, in each task 10'000 small structs created, inserted into and retrieved from a hash-map.
 
-No blocking I/O calls. We're evaluating Go and Rust for writing high-performance multiplayer server, where during the main game-loop all requests will be processed using only the data in the RAM.
+No blocking I/O calls. We're evaluating Go and Rust for writing high-performance multiplayer server, where during the main game-loop all requests will be processed using only RAM data.
 
 ## How to run
 
