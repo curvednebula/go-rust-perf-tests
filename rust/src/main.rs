@@ -1,5 +1,5 @@
 use mimalloc::MiMalloc;
-use std::{collections::HashMap, thread, time::Duration, u128};
+use std::{collections::HashMap, thread, time::Duration};
 use tokio::{task::JoinSet, time::Instant};
 
 #[global_allocator]
@@ -52,14 +52,11 @@ async fn run_test() {
     }
 
     let mut num_results = 0;
-    let mut all_tasks_time: u128 = 0;
-    let mut min_time: u128 = u128::MAX;
-    let mut max_time: u128 = u128::MIN;
+    let mut all_tasks_time= Duration::ZERO;
+    let mut min_time = Duration::MAX;
+    let mut max_time = Duration::ZERO;
 
-    while let Some(res) = join_set.join_next().await {
-        let val = res.unwrap();
-
-        let task_time = val.as_millis();
+    while let Some(Ok(task_time)) = join_set.join_next().await {
         all_tasks_time += task_time;
         if min_time > task_time {
             min_time = task_time;
@@ -73,14 +70,11 @@ async fn run_test() {
     assert!(num_results == TASKS_NUM);
 
     let total_duration = start.elapsed();
-    let avg_time = all_tasks_time / (num_results as u128);
+    let avg_time = all_tasks_time / num_results;
 
     println!(
         "- finished in {:?}, task avg {:?}, min {:?}, max {:?}",
-        total_duration,
-        Duration::from_millis(avg_time as u64),
-        Duration::from_millis(min_time as u64),
-        Duration::from_millis(max_time as u64)
+        total_duration, avg_time, min_time, max_time
     );
 }
 
