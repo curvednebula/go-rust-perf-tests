@@ -1,9 +1,8 @@
-use mimalloc::MiMalloc;
+#[global_allocator]
+static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+
 use std::{collections::HashMap, thread, time::Duration};
 use tokio::{task::JoinSet, time::Instant};
-
-#[global_allocator]
-static GLOBAL: MiMalloc = MiMalloc;
 
 const TASKS_NUM: u32 = 100_000;
 const ITEMS_NUM: u32 = 10_000;
@@ -52,7 +51,7 @@ async fn run_test() {
     }
 
     let mut num_results = 0;
-    let mut all_tasks_time= Duration::ZERO;
+    let mut all_tasks_time = Duration::ZERO;
     let mut min_time = Duration::MAX;
     let mut max_time = Duration::ZERO;
 
