@@ -1,24 +1,26 @@
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 
-use std::{collections::HashMap, num::NonZeroUsize, sync::Arc, time::Duration};
+use ahash::{HashMap, HashMapExt};
+use compact_str::{CompactString, ToCompactString};
+use std::{num::NonZeroUsize, sync::Arc, time::Duration};
 use tokio::{sync::Semaphore, task::JoinSet, time::Instant};
 
 const TASKS_NUM: u32 = 100_000;
 const ITEMS_NUM: u32 = 10_000;
 
 struct SomeData {
-    name: String,
+    name: CompactString,
     num: u32,
 }
 
 fn test_task() -> Duration {
     let task_start = Instant::now();
-    let mut map = HashMap::new();
+    let mut map = HashMap::with_capacity(ITEMS_NUM.try_into().unwrap());
     let mut _sum: u64 = 0;
 
     for j in 0..ITEMS_NUM {
-        let name = j.to_string(); // same performance: format!("{}", j);
+        let name = j.to_compact_string();
 
         map.insert(
             name.clone(),
