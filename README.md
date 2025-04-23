@@ -22,7 +22,7 @@ cargo run --release
 
 Platform: Windows 10, Intel(R) Core(TM) i7-9850H CPU @ 2.60GHz
 
-## UPDATE
+## UPDATE!!!
 
 After publishing the original results I've got several pull-requests that optimized Rust and Go code and changed the numbers significantly. The latest results so far are:
 
@@ -30,6 +30,8 @@ After publishing the original results I've got several pull-requests that optimi
 |-------------|------------|----------|-----------|
 | Go          | 15.8s      | 10ms     | 110Mb     |
 | Rust        | 6.9s       | 0.8ms    | 45Mb      |
+
+# Original Results
 
 ## Start 10 new tasks each millisec
 
