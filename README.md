@@ -24,14 +24,16 @@ Platform: Windows 10, Intel(R) Core(TM) i7-9850H CPU @ 2.60GHz
 
 ## UPDATE!!!
 
-After publishing the original results I've got several pull-requests that optimized Rust and Go code and changed the numbers significantly. The latest results:
+After publishing the original results I've got several pull-requests that optimized Rust and Go code and changed the numbers significantly. 
+
+TODO: The latest Rust implementation uses compact_str - a more efficient way to store strings directly on the stack instead of the heap. Go version needs to be updated with a similar solution.
+
+The latest results:
 
 | Test        | Total Time | Task Avg | RAM Usage |
 |-------------|------------|----------|-----------|
 | Go          | 17.6s      | 4ms      | 55Mb      |
 | Rust        | 6.9s       | 0.8ms    | 45Mb      |
-
-TODO: The latest Rust implementation uses compact_str - a more efficient way to store strings directly on the stack instead of the heap. Go version needs to be updated with a similar solution.
 
 # Original Results
 
