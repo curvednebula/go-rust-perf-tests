@@ -28,7 +28,7 @@ After publishing the original results I've got several pull-requests that optimi
 
 | Test        | Total Time | Task Avg | RAM Usage |
 |-------------|------------|----------|-----------|
-| Go          | 15.8s      | 10ms     | 110Mb     |
+| Go          | 17.6s      | 4ms      | 55Mb      |
 | Rust        | 6.9s       | 0.8ms    | 45Mb      |
 
 # Original Results
