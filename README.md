@@ -20,7 +20,7 @@ cargo run --release
 
 # Test Results
 
-Platform: Windows 10, Intel Core i7 CPU
+Platform: Windows 10, Intel(R) Core(TM) i7-9850H CPU @ 2.60GHz
 
 ## UPDATE
 
