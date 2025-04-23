@@ -31,6 +31,8 @@ After publishing the original results I've got several pull-requests that optimi
 | Go          | 17.6s      | 4ms      | 55Mb      |
 | Rust        | 6.9s       | 0.8ms    | 45Mb      |
 
+TODO: The latest Rust implementation uses compact_str - a more efficient way to store strings directly on the stack instead of the heap. Go version needs to be updated with a similar solution.
+
 # Original Results
 
 ## Start 10 new tasks each millisec
