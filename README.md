@@ -22,6 +22,14 @@ cargo run --release
 
 Platform: Windows 10, Intel Core i7 CPU
 
+## UPDATE
+
+After publishing the original results I've got several pull-requests that optimized Rust and Go code and changed the numbers significantly. The latest results so far are:
+
+**Go**: finished in 15.76s, RAM: 110Mb
+
+**Rust**: finished in 6.95s, RAM: 45Mb
+
 ## Start 10 new tasks each millisec
 
 This test simulates 10'000 requests per sec until 100'000 tasks started. Then waits all to finish.

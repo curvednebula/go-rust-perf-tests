@@ -11,7 +11,8 @@ import (
 const TASKS_NUM = 100_000
 const ITEMS_NUM = 10_000
 const TASKS_IN_BUNCH = 10
-const TIME_BETWEEN_BUNCHES_MS = 1
+
+// const TIME_BETWEEN_BUNCHES_MS = 1
 
 type SomeData struct {
 	Name string
@@ -20,7 +21,7 @@ type SomeData struct {
 
 func doWork() float64 {
 	start := time.Now()
-	dataMap := make(map[string]SomeData)
+	dataMap := make(map[string]SomeData, ITEMS_NUM)
 	var sum uint64 = 0
 
 	for j := uint32(0); j < ITEMS_NUM; j++ {
@@ -47,12 +48,12 @@ func Test(numWorkers int, recycle bool) {
 
 	// don't block main thread when running the test as it needs to start receving from channel asap
 	go func() {
-		for taskIdx := range TASKS_NUM {
+		for range TASKS_NUM {
 			workers.DoWork(doWork)
-			if taskIdx%TASKS_IN_BUNCH == 0 {
-				// simulate requests coming sequentially not all at once
-				time.Sleep(TIME_BETWEEN_BUNCHES_MS * time.Millisecond)
-			}
+			// if taskIdx%TASKS_IN_BUNCH == 0 {
+			// 	// simulate requests coming sequentially not all at once
+			// 	time.Sleep(TIME_BETWEEN_BUNCHES_MS * time.Millisecond)
+			// }
 		}
 	}()
 
