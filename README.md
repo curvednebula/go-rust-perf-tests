@@ -24,7 +24,7 @@ Platform: Windows 10, Intel(R) Core(TM) i7-9850H CPU @ 2.60GHz
 
 ## UPDATE!!!
 
-After publishing the original results I've got several pull-requests that optimized Rust and Go code and changed the numbers significantly. The latest results so far are:
+After publishing the original results I've got several pull-requests that optimized Rust and Go code and changed the numbers significantly. The latest results:
 
 | Test        | Total Time | Task Avg | RAM Usage |
 |-------------|------------|----------|-----------|
