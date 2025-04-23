@@ -26,9 +26,10 @@ Platform: Windows 10, Intel Core i7 CPU
 
 After publishing the original results I've got several pull-requests that optimized Rust and Go code and changed the numbers significantly. The latest results so far are:
 
-**Go**: finished in 15.76s, RAM: 110Mb
-
-**Rust**: finished in 6.95s, RAM: 45Mb
+| Test        | Total Time | Task Avg | RAM Usage |
+|-------------|------------|----------|-----------|
+| Go          | 15.8s      | 10ms     | 110Mb     |
+| Rust        | 6.9s       | 0.8ms    | 45Mb      |
 
 ## Start 10 new tasks each millisec
 
